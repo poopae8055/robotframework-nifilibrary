@@ -23,6 +23,3 @@ pip install -U robotframework-nifilibrary
 |                       | Wait Until Keyword Succeeds | 3x                    | 5s          | File Should Exist            | ${local_folder_path}/${file_name_value} |                     |
 
 # Documentation
-For the detail keyword documentation. Go to this following link:
-
-https://robotframework-thailand.github.io/robotframework-nifilibrary/NifiLibrary.html
