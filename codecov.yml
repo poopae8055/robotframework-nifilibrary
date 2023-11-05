@@ -1,0 +1,3 @@
+ignore:
+  - "setup.py"
+  - "nifi_test.robot"
