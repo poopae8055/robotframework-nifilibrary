@@ -60,7 +60,6 @@ class NifiLibrary(object):
             raise Exception('Require parameters cannot be none')
         try:
             response = self.update_process_group_state(base_url, token, processor_group_id, 'RUNNING', verify)
-            print(response.json())
             return response
         except Exception as ex:
             logger.error(str(ex))

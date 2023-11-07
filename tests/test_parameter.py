@@ -8,7 +8,6 @@ class NifiParameterTest(unittest.TestCase):
 
     def setUp(self) -> None:
         self.nifi = NifiLibrary()
-        self.mock_response = MagicMock()
         self.base_url = "https://localhost:8443"
         self.username = "test"
         self.password = "test"
