@@ -17,7 +17,7 @@ class NifiTokenTest(unittest.TestCase):
     def test_get_nifi_token_success(self):
         # Arrange
         expected_result = "#123456#"
-        self.mock_response.text = expected_result
+        self.mock_response = expected_result
         requests.post = MagicMock(return_value=self.mock_response)
         # Act
         result = self.nifi.get_nifi_token(self.base_url, self.username, self.password, self.verify)
@@ -35,7 +35,7 @@ class NifiTokenTest(unittest.TestCase):
             self.assertEqual(str(ex), "Error making API request: Simulated error")
             raised = False
         finally:
-            # Restore the original requests.get
+            # Restore the original requests.post
             requests.post = MagicMock()
         self.assertTrue(raised)
 
@@ -88,7 +88,7 @@ class NifiTokenTest(unittest.TestCase):
             self.assertEqual(str(ex), "Error making API request: Simulated error")
             raised = False
         finally:
-            # Restore the original requests.get
+            # Restore the original requests.post
             requests.post = original_post
         self.assertFalse(raised)
 

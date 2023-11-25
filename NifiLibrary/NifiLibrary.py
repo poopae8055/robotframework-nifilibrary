@@ -12,10 +12,6 @@ class NifiLibrary(object):
         self._endpoint = None
         self._accessToken = None
 
-    def cal_x(self, x, y):
-        result_a = x + y
-        return result_a
-
     @keyword('Get Nifi Token')
     def get_nifi_token(self, base_url=None, username=None, password=None, verify=False):
         """ Get NiFi Token
@@ -60,7 +56,6 @@ class NifiLibrary(object):
             raise Exception('Require parameters cannot be none')
         try:
             response = self.update_process_group_state(base_url, token, processor_group_id, 'RUNNING', verify)
-            print(response.json())
             return response
         except Exception as ex:
             logger.error(str(ex))

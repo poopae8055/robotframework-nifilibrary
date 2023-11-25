@@ -8,7 +8,6 @@ class NifiProcessGroupTest(unittest.TestCase):
 
     def setUp(self) -> None:
         self.nifi = NifiLibrary()
-        self.mock_response = MagicMock()
         self.base_url = "https://localhost:8443"
         self.username = "test"
         self.password = "test"
@@ -18,6 +17,7 @@ class NifiProcessGroupTest(unittest.TestCase):
 
     def test_start_process_group_success(self):
         # Arrange
+        self.mock_response = MagicMock()
         expected_result = {"revision": {"version": 35}, "id": self.processor_group_id}
         requests.put = MagicMock(status_code=200, return_value=expected_result)
         # Act
@@ -92,8 +92,11 @@ class NifiProcessGroupTest(unittest.TestCase):
         expected_result = {"revision": {"version": 35}, "id": "f0110f6c-ba9f-3ac3-00fc-577aa1a4054c"}
         requests.put = MagicMock(status_code=200, return_value=expected_result)
         # Act
+        print("######1#####")
         result = self.nifi.stop_process_group(self.base_url, self.token, self.processor_group_id,
                                               self.verify)
+        print("######result#####")
+        print(result)
         # Assert
         self.assertEqual(result, expected_result)
         requests.put.assert_called_once_with(f'{self.base_url}/nifi-api/flow/process-groups/{self.processor_group_id}',
