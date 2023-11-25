@@ -3,8 +3,8 @@ from .version import VERSION
 
 __version__ = VERSION
 
-__author__ = 'Weeraporn Paisingkhon'
-__email__ = 'weeraporn.pa@gmail.com'
+__author__ = 'Weeraporn.pai'
+__email__ = 'poopae1322@gmail.com'
 
 class NifiLibrary(NifiLibrary):
     """NifiLibrary is a robotframework library for calling jenkins api
