@@ -21,7 +21,7 @@ class NifiLibrary(NifiLibrary):
     | ${job_build_details}=  | Build Jenkins With Parameters And Wait Until Job Done | ${job_full_name} | ${parameters_string} | 10 | 2 |
 
     """
-
+    
     ROBOT_LIBRARY_SCOPE = "GLOBAL"
     ROBOT_LIBRARY_DOC_FORMAT = "ROBOT"
     ROBOT_LIBRARY_VERSION = VERSION

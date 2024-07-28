@@ -8,23 +8,14 @@ class NifiParameterTest(unittest.TestCase):
 
     def setUp(self) -> None:
         self.nifi = NifiLibrary()
-        self.base_url = "https://localhost:8443"
-        self.username = "test"
-        self.password = "test"
-        self.verify = False
-        self.processor_group_id = "Af0110f6c-ba7f-3ac0-00fc-677aa1a4054c"
-        self.processor_group_name = "A_group"
-        self.token = "1234"
         self.param_context_id = "f0110f6c-ba7f-3ac0-00fc-677aa1a4054c"
         self.param_context_name = "test_param_context"
         self.parameter_name = "name"
         self.parameter_value = "Mr.AAA"
-        self.id = "f0110f6c-ba9f-3ac3-00fc-577aa1a4054c"
 
     @patch('NifiLibrary.NifiLibrary.NifiLibrary.get_process_group')
     @patch('nipyapi.nifi.apis.process_groups_api.ProcessGroupsApi.update_process_group')
     def test_updating_parameter_context_succeeds(self, mock_update_process_group, mock_get_process_group):
-        print("inside>>>")
         self.revision = MagicMock(version=1)
         mock_process_group_response = MagicMock(version=1)
         mock_get_process_group.return_value = mock_process_group_response
@@ -88,29 +79,29 @@ class NifiParameterTest(unittest.TestCase):
         mock_get_parameter_context.return_value = mock_param_context_response
         mock_update_parameter_context.return_value = 'Success'
 
-        result = self.nifi.update_parameter_value_without_stopped_component('param_context_id', 'parameter_name',
-                                                                            'parameter_value')
+        result = self.nifi.update_parameter_value_without_stopped_component(self.param_context_id, self.parameter_name,
+                                                                            self.parameter_value)
 
         assert result == 'Success'
-        mock_get_parameter_context.assert_called_once_with('param_context_id')
+        mock_get_parameter_context.assert_called_once_with(self.param_context_id)
         mock_update_parameter_context.assert_called_once()
 
     def test_update_parameter_value_without_stopped_component_raises_exception_for_missing_param_context_id(self):
 
         try:
-            self.nifi.update_parameter_value_without_stopped_component(None, 'parameter_name', 'parameter_value')
+            self.nifi.update_parameter_value_without_stopped_component(None, self.parameter_name, self.parameter_value)
         except Exception as e:
             assert str(e) == 'Require parameters cannot be none'
 
     def test_update_parameter_value_without_stopped_component_raises_exception_for_missing_parameter_name(self):
         try:
-            self.nifi.update_parameter_value_without_stopped_component('param_context_id', None, 'parameter_value')
+            self.nifi.update_parameter_value_without_stopped_component(self.param_context_id, None, self.parameter_value)
         except Exception as e:
             assert str(e) == 'Require parameters cannot be none'
 
     def test_update_parameter_value_without_stopped_component_raises_exception_for_missing_parameter_value(self):
         try:
-            self.nifi.update_parameter_value_without_stopped_component('param_context_id', 'parameter_name', None)
+            self.nifi.update_parameter_value_without_stopped_component(self.param_context_id, self.parameter_name, None)
         except Exception as e:
             assert str(e) == 'Require parameters cannot be none'
 
@@ -137,30 +128,30 @@ class NifiParameterTest(unittest.TestCase):
         mock_get_response.request.complete = True
         mock_get_parameter_context_update.return_value = mock_get_response
 
-        result = self.nifi.update_parameter_value_with_stopped_component('param_context_id', 'parameter_name',
-                                                                            'parameter_value', return_response=True)
+        result = self.nifi.update_parameter_value_with_stopped_component(self.param_context_id, self.parameter_name,
+                                                                            self.parameter_value, return_response=True)
 
         assert result is True
-        mock_get_parameter_context.assert_called_once_with('param_context_id')
+        mock_get_parameter_context.assert_called_once_with(self.param_context_id)
         mock_submit_parameter_context_update.assert_called_once()
         mock_get_parameter_context_update.assert_called()
-        mock_delete_update_request.assert_called_once_with(context_id='param_context_id', request_id='request_id')
+        mock_delete_update_request.assert_called_once_with(context_id=self.param_context_id, request_id='request_id')
 
     def test_update_parameter_value_with_stopped_component_raises_exception_for_missing_param_context_id(self):
         try:
-            self.nifi.update_parameter_value_with_stopped_component(None, 'parameter_name', 'parameter_value')
+            self.nifi.update_parameter_value_with_stopped_component(None, self.parameter_name, self.parameter_value)
         except Exception as e:
             assert str(e) == 'Require parameters cannot be none'
 
     def test_update_parameter_value_with_stopped_component_raises_exception_for_missing_parameter_name(self):
         try:
-            self.nifi.update_parameter_value_with_stopped_component('param_context_id', None, 'parameter_value')
+            self.nifi.update_parameter_value_with_stopped_component(self.param_context_id, None, self.parameter_value)
         except Exception as e:
             assert str(e) == 'Require parameters cannot be none'
 
     def test_update_parameter_value_with_stopped_component_raises_exception_for_missing_parameter_value(self):
         try:
-            self.nifi.update_parameter_value_with_stopped_component('param_context_id', 'parameter_name', None)
+            self.nifi.update_parameter_value_with_stopped_component(self.param_context_id, self.parameter_name, None)
         except Exception as e:
             assert str(e) == 'Require parameters cannot be none'
 
