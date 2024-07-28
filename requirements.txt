@@ -1,2 +1,3 @@
 requests
 robotframework
+nipyapi==0.20.0

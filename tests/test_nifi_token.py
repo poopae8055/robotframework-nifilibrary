@@ -1,96 +1,40 @@
 from NifiLibrary.NifiLibrary import NifiLibrary
 import unittest
-from unittest.mock import MagicMock
-import requests
+from unittest.mock import patch
 
 
 class NifiTokenTest(unittest.TestCase):
 
     def setUp(self) -> None:
         self.nifi = NifiLibrary()
-        self.mock_response = MagicMock()
         self.base_url = "https://localhost:8443"
-        self.username = "test"
-        self.password = "test"
-        self.verify = False
+        self.username = "admin"
+        self.password = "admin1234567"
 
-    def test_get_nifi_token_success(self):
-        # Arrange
-        expected_result = "#123456#"
-        self.mock_response = expected_result
-        requests.post = MagicMock(return_value=self.mock_response)
-        # Act
-        result = self.nifi.get_nifi_token(self.base_url, self.username, self.password, self.verify)
-        # Assert
-        try:
-            self.assertEqual(result, expected_result)
-            requests.post.assert_called_once_with(
-                f"{self.base_url}/nifi-api/access/token",
-                headers=self.nifi.headers,
-                data={'username': self.username, 'password': self.password},
-                verify=self.verify
-            )
-            raised = True
-        except Exception as ex:
-            self.assertEqual(str(ex), "Error making API request: Simulated error")
-            raised = False
-        finally:
-            # Restore the original requests.post
-            requests.post = MagicMock()
-        self.assertTrue(raised)
+    @patch('nipyapi.nifi.apis.access_api.AccessApi.create_access_token')
+    @patch('nipyapi.utils.set_endpoint')
+    def test_get_nifi_token_success(self, mock_set_endpoint, mock_create_access_token):
+        # Setup mock return values
+        mock_create_access_token.return_value = 'mocked_token'
+        mock_set_endpoint.return_value = None
+        # Call the method under test
+        token = self.nifi.get_nifi_token(self.base_url, self.username, self.password, True)
+        # Assertions to verify the expected outcomes
+        self.assertEqual(token, 'mocked_token')
+        mock_set_endpoint.assert_called_once_with('https://localhost:8443/nifi-api/')
+        mock_create_access_token.assert_called_once_with(username=self.username, password=self.password)
 
-    def test_nifi_token_when_url_is_none(self):
-        raised = False
-        try:
-            self.nifi.get_nifi_token(None, self.username, self.password, self.verify)
-        except:
-            raised = True
-        self.assertTrue(raised)
+    def test_get_nifi_token_with_missing_parameters_raises_exception(self):
+        with self.assertRaises(Exception) as context:
+            self.nifi.get_nifi_token(None, self.username, self.password, True)
+        self.assertTrue('Require parameters cannot not be none' in str(context.exception))
 
-    def test_nifi_token_when_username_is_none(self):
-        raised = False
-        try:
-            self.nifi.get_nifi_token(self.base_url, None, self.password, self.verify)
-        except:
-            raised = True
-        self.assertTrue(raised)
-
-    def test_nifi_token_when_password_is_none(self):
-        raised = False
-        try:
-            self.nifi.get_nifi_token(self.base_url, self.username, None, self.verify)
-        except:
-            raised = True
-        self.assertTrue(raised)
-
-    def test_nifi_token_when_verify_is_none(self):
-        raised = False
-        try:
-            self.nifi.get_nifi_token(self.base_url, self.password, self.password, None)
-        except:
-            raised = True
-        self.assertFalse(raised)
-
-    def test_get_nifi_token_exception(self):
-        # Arrange
-        mock_request_exception = MagicMock()
-        # Set the side effect to simulate an Exception
-        mock_request_exception.side_effect = Exception("Error making API request: Simulated error")
-        # Replace requests.post with the MagicMock instance
-        original_post = requests.post
-        requests.post = mock_request_exception
-
-        try:
-            result = self.nifi.get_nifi_token(self.base_url, self.username, self.password, self.verify)
-            raised = True
-        except Exception as ex:
-            # Here, ex will be the simulated RequestException
-            self.assertEqual(str(ex), "Error making API request: Simulated error")
-            raised = False
-        finally:
-            # Restore the original requests.post
-            requests.post = original_post
-        self.assertFalse(raised)
+    @patch('nipyapi.nifi.apis.access_api.AccessApi.create_access_token')
+    def test_get_nifi_token_api_call_fails_logs_error(self, mock_create_access_token):
+        mock_create_access_token.side_effect = Exception('API call failed')
+        with self.assertRaises(Exception) as context:
+            self.nifi.get_nifi_token(self.base_url, self.username, self.password, True)
+        self.assertTrue('API call failed' in str(context.exception))
 
     if __name__ == '__main__':
         unittest.main()

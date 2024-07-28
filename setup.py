@@ -5,7 +5,7 @@ import re
 with open('NifiLibrary/version.py', 'r') as version_file:
     version_match = re.search(r"^VERSION ?= ?['\"]([^'\"]*)['\"]", version_file.read(), re.M)
 
-with open("README.md", "r") as fh:
+with open("docs/README.md", "r") as fh:
     long_description = fh.read()
 
 if version_match:
