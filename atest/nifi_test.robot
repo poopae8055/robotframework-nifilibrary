@@ -1,7 +1,7 @@
 *** Settings ***
 Library    NifiLibrary
 Library    OperatingSystem
-Library    ../NifiLibrary/
+#Library    ../NifiLibrary/
 
 *** Variables ***
 ${base_url}   https://localhost:8443
