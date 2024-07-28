@@ -1,7 +1,6 @@
 from NifiLibrary.NifiLibrary import NifiLibrary
 import unittest
 from unittest.mock import MagicMock, patch
-import requests
 
 
 class NifiParameterTest(unittest.TestCase):
