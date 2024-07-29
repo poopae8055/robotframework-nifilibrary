@@ -3,5 +3,3 @@ ignore:
   - "atest/nifi_test.robot"
 codecov:
  token: 9a999463-cdc2-4a83-98f1-88711511ddad
- name: Upload coverage reports to Codecov
- uses: codecov/codecov-action@v4.0.1
