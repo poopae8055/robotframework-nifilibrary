@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/github/poopae8055/robotframework-nifilibrary/branch/main/graph/badge.svg?token=UWQ02FZKKK)](https://codecov.io/github/poopae8055/robotframework-nifilibrary)
+
 # NifiLibrary
 `NifiLibrary` is a [Robot Framework](http://www.robotframework.org) test library which provides keywords to work with Apache Nifi api
 
