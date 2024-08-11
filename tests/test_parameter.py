@@ -22,8 +22,8 @@ class NifiParameterTest(unittest.TestCase):
     #     mock_update_process_group.return_value = 'Success'
     #     result = self.nifi.update_process_group_parameter_context('group_id', 'context_id')
     #     self.assertEqual(result, 'Success')
-    #     # mock_get_process_group.assert_called_once_with('group_id')
-    #     # mock_update_process_group.assert_called_once()
+        # mock_get_process_group.assert_called_once_with('group_id')
+        # mock_update_process_group.assert_called_once()
 
     # @patch('NifiLibrary.NifiLibrary.get_process_group')
     # @patch('nipyapi.nifi.apis.process_groups_api.ProcessGroupsApi.get_process_group', return_value=MagicMock())
