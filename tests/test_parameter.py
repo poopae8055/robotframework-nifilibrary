@@ -13,7 +13,7 @@ class NifiParameterTest(unittest.TestCase):
         self.parameter_name = "name"
         self.parameter_value = "Mr.AAA"
 
-    @patch('self.nifi.get_process_group')
+    @patch('NifiLibrary.NifiLibrary.get_process_group')
     @patch('nipyapi.nifi.apis.process_groups_api.ProcessGroupsApi.update_process_group')
     def test_updating_parameter_context_succeeds(self, mock_update_process_group, mock_get_process_group):
         self.revision = MagicMock(version=1)
