@@ -16,18 +16,20 @@ class NifiLibrary(object):
         self._endpoint = None
         self._accessToken = None
 
-    @keyword('Get Nifi Token')
-    def get_nifi_token(self, base_url=None, username=None, password=None, return_response=False):
-        """ Get NiFi Token
+    @keyword('Connect To Nifi')
+    def connect_to_nifi(self, base_url=None, username=None, password=None, return_response=False):
+        """ Connect to NiFi and obtain an access token.
 
-        Arguments:
-            - base_url: NiFi domain
-            - username: NiFi username to login
-            - password: NiFi password to login
+            Arguments:
+            - base_url: NiFi domain (e.g., 'https://localhost:8443')
+            - username: NiFi username
+            - password: NiFi password
             - return_response: True to return token, False to return None
+            Returns:
+            - access_token: The obtained access token
 
         Examples:
-        | Get Nifi Token |  https://localhost:8443 | username | password |
+        | Connect To Nifi |  https://localhost:8443 | username | password |
 
         """
         if not base_url or not username or not password:
@@ -35,11 +37,13 @@ class NifiLibrary(object):
         # connect to Nifi
         self._endpoint = nipyapi.utils.set_endpoint(f"{base_url}/nifi-api/")
         try:
+            # Create an access token
             self._accessToken = nipyapi.nifi.apis.access_api.AccessApi(
                 api_client=nipyapi.config.nifi_config.api_client).create_access_token(
                 username=username,
                 password=password
             )
+            # Set the service auth token
             nipyapi.security.set_service_auth_token(token=self._accessToken, token_name='tokenAuth', service='nifi')
             if return_response:
                 return self._accessToken
@@ -476,6 +480,7 @@ class NifiLibrary(object):
         processor_res = nipyapi.nifi.apis.processors_api.ProcessorsApi(
             api_client=nipyapi.config.nifi_config.api_client).get_processor(
             id=processor_id)
+        print(processor_res)
         processor_version = processor_res.revision.version
         processor_id = processor_res.id
         print(processor_id)

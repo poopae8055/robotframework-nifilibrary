@@ -17,7 +17,7 @@ pip install -U robotframework-nifilibrary
 | Library               | OperatingSystem                                  |                          |                      |                     |                                         |                     |
 | *** Test Cases ***    |                                                  |                          |                      |                     |                                         |                     |
 | Rename File - Success |                                                  |                          |                      |                     |                                         |                     |
-|                       | ${token}                                         | Get Nifi Token           | ${base_url}          | ${username}         | ${password}                             |                     |
+|                       | ${token}                                         | Connect to Nifi          | ${base_url}          | ${username}         | ${password}                             |                     |
 |                       | Update Parameter Value Without Stopped Component | ${parameter_context_id}  | ${file_filter_param} | ${file_filter_name} |                                         |                     |
 |                       | Run Once Processor                               | ${get_file_processor_id} |                      |                     |                                         |                     |
 |                       | List Directory                                   | ${local_folder_path}/    |                      |                     |                                         |                     |
