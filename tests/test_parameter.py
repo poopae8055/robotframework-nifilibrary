@@ -1,4 +1,4 @@
-from NifiLibrary.NifiLibrary import NifiLibrary
+from nifi_library.NifiLibrary import NifiLibrary
 import unittest
 from unittest.mock import MagicMock, patch
 
@@ -12,18 +12,18 @@ class NifiParameterTest(unittest.TestCase):
         self.parameter_name = "name"
         self.parameter_value = "Mr.AAA"
 
-    # @patch('NifiLibrary.NifiLibrary.get_process_group')
-    # @patch('nipyapi.nifi.apis.process_groups_api.ProcessGroupsApi.update_process_group')
-    # def test_updating_parameter_context_succeeds(self, mock_update_process_group, mock_get_process_group):
-    #     self.revision = MagicMock(version=1)
-    #     mock_process_group_response = MagicMock(version=1)
-    #     mock_get_process_group.return_value = mock_process_group_response
-    #     mock_update_process_group.return_value = 'Success'
-    #     result = self.nifi.update_process_group_parameter_context('group_id', 'context_id')
-    #     self.assertEqual(result, 'Success')
-    #     mock_get_process_group.assert_called_once_with('group_id')
-    #     mock_update_process_group.assert_called_once()
-    #
+    @patch('nifi_library.NifiLibrary.get_process_group')
+    @patch('nipyapi.nifi.apis.process_groups_api.ProcessGroupsApi.update_process_group')
+    def test_updating_parameter_context_succeeds(self, mock_update_process_group, mock_get_process_group):
+        self.revision = MagicMock(version=1)
+        mock_process_group_response = MagicMock(version=1)
+        mock_get_process_group.return_value = mock_process_group_response
+        mock_update_process_group.return_value = 'Success'
+        result = self.nifi.update_process_group_parameter_context('group_id', 'context_id')
+        self.assertEqual(result, 'Success')
+        mock_get_process_group.assert_called_once_with('group_id')
+        mock_update_process_group.assert_called_once()
+
     # @patch('NifiLibrary.NifiLibrary.NifiLibrary.get_process_group')
     # def test_updating_parameter_context_fails_due_to_invalid_group_id(self, mock_get_process_group):
     #     mock_get_process_group.side_effect = Exception('Invalid group ID')
