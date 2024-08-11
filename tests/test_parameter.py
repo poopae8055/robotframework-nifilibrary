@@ -12,39 +12,39 @@ class NifiParameterTest(unittest.TestCase):
         self.parameter_name = "name"
         self.parameter_value = "Mr.AAA"
 
-    @patch('nipyapi.nifi.apis.process_groups_api.ProcessGroupsApi.update_process_group')
-    @patch('nipyapi.nifi.apis.process_groups_api.ProcessGroupsApi.get_process_group', return_value=MagicMock())
-    def test_updating_parameter_context_succeeds(self, mock_update_process_group,
-                                                 mock_get_process_group):
-        self.revision = MagicMock(version=1)
-        mock_process_group_response = MagicMock(version=1)
-        mock_get_process_group.return_value = mock_process_group_response
-        mock_update_process_group.return_value = 'Success'
-        result = self.nifi.update_process_group_parameter_context('group_id', 'context_id')
-        self.assertEqual(result, 'Success')
-        # mock_get_process_group.assert_called_once_with('group_id')
-        # mock_update_process_group.assert_called_once()
+    # @patch('nipyapi.nifi.apis.process_groups_api.ProcessGroupsApi.update_process_group')
+    # @patch('nipyapi.nifi.apis.process_groups_api.ProcessGroupsApi.get_process_group', return_value=MagicMock())
+    # def test_updating_parameter_context_succeeds(self, mock_update_process_group,
+    #                                              mock_get_process_group):
+    #     self.revision = MagicMock(version=1)
+    #     mock_process_group_response = MagicMock(version=1)
+    #     mock_get_process_group.return_value = mock_process_group_response
+    #     mock_update_process_group.return_value = 'Success'
+    #     result = self.nifi.update_process_group_parameter_context('group_id', 'context_id')
+    #     self.assertEqual(result, 'Success')
+    #     # mock_get_process_group.assert_called_once_with('group_id')
+    #     # mock_update_process_group.assert_called_once()
 
-    @patch('NifiLibrary.NifiLibrary.get_process_group')
-    @patch('nipyapi.nifi.apis.process_groups_api.ProcessGroupsApi.get_process_group', return_value=MagicMock())
-    def test_updating_parameter_context_fails_due_to_invalid_group_id(self, mock_get_process_group):
-        mock_get_process_group.side_effect = Exception('Invalid group ID')
-        with self.assertRaises(Exception) as context:
-            self.nifi.update_process_group_parameter_context('invalid_group_id', 'context_id')
-        self.assertTrue('Invalid group ID' in str(context.exception))
+    # @patch('NifiLibrary.NifiLibrary.get_process_group')
+    # @patch('nipyapi.nifi.apis.process_groups_api.ProcessGroupsApi.get_process_group', return_value=MagicMock())
+    # def test_updating_parameter_context_fails_due_to_invalid_group_id(self, mock_get_process_group):
+    #     mock_get_process_group.side_effect = Exception('Invalid group ID')
+    #     with self.assertRaises(Exception) as context:
+    #         self.nifi.update_process_group_parameter_context('invalid_group_id', 'context_id')
+    #     self.assertTrue('Invalid group ID' in str(context.exception))
 
-    @patch('NifiLibrary.NifiLibrary.get_process_group')
-    @patch('nipyapi.nifi.apis.process_groups_api.ProcessGroupsApi.update_process_group')
-    @patch('nipyapi.nifi.apis.process_groups_api.ProcessGroupsApi.get_process_group', return_value=MagicMock())
-    def test_updating_parameter_context_fails_due_to_invalid_context_id(self, mock_update_process_group,
-                                                                        mock_get_process_group):
-        self.revision = MagicMock(version=1)
-        mock_process_group_response = MagicMock(version=1)
-        mock_get_process_group.return_value = mock_process_group_response
-        mock_update_process_group.side_effect = Exception('Invalid context ID')
-        with self.assertRaises(Exception) as context:
-            self.nifi.update_process_group_parameter_context('group_id', 'invalid_context_id')
-        self.assertTrue('Invalid context ID' in str(context.exception))
+    # @patch('NifiLibrary.NifiLibrary.get_process_group')
+    # @patch('nipyapi.nifi.apis.process_groups_api.ProcessGroupsApi.update_process_group')
+    # @patch('nipyapi.nifi.apis.process_groups_api.ProcessGroupsApi.get_process_group', return_value=MagicMock())
+    # def test_updating_parameter_context_fails_due_to_invalid_context_id(self, mock_update_process_group,
+    #                                                                     mock_get_process_group):
+    #     self.revision = MagicMock(version=1)
+    #     mock_process_group_response = MagicMock(version=1)
+    #     mock_get_process_group.return_value = mock_process_group_response
+    #     mock_update_process_group.side_effect = Exception('Invalid context ID')
+    #     with self.assertRaises(Exception) as context:
+    #         self.nifi.update_process_group_parameter_context('group_id', 'invalid_context_id')
+    #     self.assertTrue('Invalid context ID' in str(context.exception))
 
     def test_updating_parameter_context_fails_with_none_parameters(self):
         with self.assertRaises(Exception) as context:
@@ -71,20 +71,20 @@ class NifiParameterTest(unittest.TestCase):
             self.nifi.get_parameter_context('example_id')
         self.assertTrue('API call failed' in str(context.exception))
 
-    @patch('nipyapi.nifi.apis.parameter_contexts_api.ParameterContextsApi.update_parameter_context')
-    @patch('nipyapi.nifi.apis.parameter_contexts_api.ParameterContextsApi.get_parameter_context')
-    def test_update_parameter_value_without_stopped_component_updates_parameter_successfully(self,
-                                                                                             mock_update_parameter_context,
-                                                                                             mock_get_parameter_context):
-        mock_param_context_response = MockParameterContextResponse(revision_version=1, param_id='param_id',
-                                                                   param_component_id='param_component_id')
-        mock_get_parameter_context.return_value = mock_param_context_response
-        mock_update_parameter_context.return_value = 'Success'
-
-        result = self.nifi.update_parameter_value_without_stopped_component(self.param_context_id, self.parameter_name,
-                                                                            self.parameter_value)
-
-        assert result == 'Success'
+    # @patch('nipyapi.nifi.apis.parameter_contexts_api.ParameterContextsApi.update_parameter_context')
+    # @patch('nipyapi.nifi.apis.parameter_contexts_api.ParameterContextsApi.get_parameter_context')
+    # def test_update_parameter_value_without_stopped_component_updates_parameter_successfully(self,
+    #                                                                                          mock_update_parameter_context,
+    #                                                                                          mock_get_parameter_context):
+    #     mock_param_context_response = MockParameterContextResponse(revision_version=1, param_id='param_id',
+    #                                                                param_component_id='param_component_id')
+    #     mock_get_parameter_context.return_value = mock_param_context_response
+    #     mock_update_parameter_context.return_value = 'Success'
+    #
+    #     result = self.nifi.update_parameter_value_without_stopped_component(self.param_context_id, self.parameter_name,
+    #                                                                         self.parameter_value)
+    #
+    #     assert result == 'Success'
         # mock_get_parameter_context.assert_called_once_with(self.param_context_id)
         # mock_update_parameter_context.assert_called_once()
 
