@@ -38,7 +38,9 @@ class NifiProcessor(unittest.TestCase):
 
     @patch('NifiLibrary.NifiLibrary.update_process_state')
     @patch('nipyapi.nifi.apis.processors_api.ProcessorsApi.get_processor', return_value=MagicMock())
-    def test_stop_processor_stops_processor_successfully(self, mock_update_process_state):
+    def test_stop_processor_stops_processor_successfully(self, mock_update_process_state, mock_get_processor):
+        mock_process_group_response = MagicMock(version=1)
+        mock_get_processor.return_value = mock_process_group_response
         mock_update_process_state.return_value = 'Success'
 
         result = self.nifi.stop_processor(self.processor_id, return_response=True)
