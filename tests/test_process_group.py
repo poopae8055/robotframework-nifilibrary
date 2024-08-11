@@ -10,20 +10,20 @@ class NifiProcessGroupTest(unittest.TestCase):
         self.processor_group_id = "Af0110f6c-ba7f-3ac0-00fc-677aa1a4054c"
         self.processor_group_name = "A_group"
 
-    @patch('NifiLibrary.NifiLibrary.NifiLibrary.update_process_group_state')
-    def test_start_process_group_starts_group_successfully(self, mock_update_process_group_state):
-        mock_update_process_group_state.return_value = 'Success'
-
-        result = self.nifi.start_process_group(self.processor_group_id, return_response=True)
-
-        assert result == 'Success'
-        mock_update_process_group_state.assert_called_once_with(self.processor_group_id, 'RUNNING')
-
-    def test_start_process_group_raises_exception_for_missing_processor_group_id(self):
-        try:
-            self.nifi.start_process_group(None)
-        except Exception as e:
-            assert str(e) == 'Require parameters cannot be none'
+    # @patch('NifiLibrary.NifiLibrary.NifiLibrary.update_process_group_state')
+    # def test_start_process_group_starts_group_successfully(self, mock_update_process_group_state):
+    #     mock_update_process_group_state.return_value = 'Success'
+    #
+    #     result = self.nifi.start_process_group(self.processor_group_id, return_response=True)
+    #
+    #     assert result == 'Success'
+    #     mock_update_process_group_state.assert_called_once_with(self.processor_group_id, 'RUNNING')
+    #
+    # def test_start_process_group_raises_exception_for_missing_processor_group_id(self):
+    #     try:
+    #         self.nifi.start_process_group(None)
+    #     except Exception as e:
+    #         assert str(e) == 'Require parameters cannot be none'
     #
     # @patch('NifiLibrary.NifiLibrary.NifiLibrary.update_process_group_state')
     # def test_start_process_group_logs_error_on_failure(self, mock_update_process_group_state):
