@@ -36,14 +36,14 @@ class NifiProcessor(unittest.TestCase):
             assert str(e) == 'Failed to get processor'
         mock_get_processor.assert_called_once_with(id=self.processor_id)
         
-    # @patch('NifiLibrary.NifiLibrary.NifiLibrary.update_process_state')
-    # def test_stop_processor_stops_processor_successfully(self, mock_update_process_state):
-    #     mock_update_process_state.return_value = 'Success'
-    #
-    #     result = self.nifi.stop_processor(self.processor_id, return_response=True)
-    #
-    #     assert result == 'Success'
-    #     mock_update_process_state.assert_called_once_with(self.processor_id, 'STOPPED')
+    @patch('NifiLibrary.NifiLibrary.update_process_state')
+    def test_stop_processor_stops_processor_successfully(self, mock_update_process_state):
+        mock_update_process_state.return_value = 'Success'
+
+        result = self.nifi.stop_processor(self.processor_id, return_response=True)
+
+        assert result == 'Success'
+        mock_update_process_state.assert_called_once_with(self.processor_id, 'STOPPED')
 
     def test_stop_processor_raises_exception_for_missing_processor_id(self):
         try:
