@@ -1,5 +1,6 @@
 requests
 robotframework
 nipyapi==0.20.0
-pytest-cov
-pytest
+pytest-cov==2.12.1
+pytest==6.2.4
+codecov==2.1.12
