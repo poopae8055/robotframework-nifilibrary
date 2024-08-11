@@ -9,7 +9,7 @@ class NifiProcessor(unittest.TestCase):
         self.nifi = NifiLibrary()
         self.processor_id = "Af0110f6c-ba7f-3ac0-00fc-677aa1a4054c"
         self.processor_name = "A_group"
-        
+
     @patch('nipyapi.nifi.apis.processors_api.ProcessorsApi.get_processor')
     def test_get_processor_returns_processor_details_successfully(self, mock_get_processor):
         mock_response = MagicMock()
@@ -36,18 +36,66 @@ class NifiProcessor(unittest.TestCase):
             assert str(e) == 'Failed to get processor'
         mock_get_processor.assert_called_once_with(id=self.processor_id)
 
-    @patch('NifiLibrary.NifiLibrary.update_process_state')
-    @patch('nipyapi.nifi.apis.processors_api.ProcessorsApi.get_processor', return_value=MagicMock())
-    def test_stop_processor_stops_processor_successfully(self, mock_update_process_state, mock_get_processor):
-        mock_process_group_response = MagicMock(version=1)
-        mock_get_processor.return_value = mock_process_group_response
-        mock_update_process_state.return_value = 'Success'
+    @patch('nipyapi.nifi.apis.processors_api.ProcessorsApi.get_processor')
+    @patch('nipyapi.nifi.apis.processors_api.ProcessorsApi.update_run_status')
+    def update_processor_state_updates_state_successfully(mock_update_run_status, mock_get_processor):
+        mock_response = MagicMock()
+        mock_response.revision.version = 1
+        mock_response.id = 'mock_processor_id'
+        mock_get_processor.return_value = mock_response
+        mock_update_run_status.return_value = 'Success'
+
+        result = self.nifi.update_process_state('mock_processor_id', 'RUNNING')
+
+        assert result == 'Success'
+        mock_get_processor.assert_called_once_with(id='mock_processor_id')
+        mock_update_run_status.assert_called_once_with(
+            id='mock_processor_id',
+            body={'revision': {'clientId': 'mock_processor_id', 'version': 1}, 'state': 'RUNNING'}
+        )
+
+    @patch('nipyapi.nifi.apis.processors_api.ProcessorsApi.get_processor')
+    def update_processor_state_raises_exception_for_missing_processor_id(mock_get_processor):
+        try:
+            self.nifi.update_process_state(None, 'RUNNING')
+        except Exception as e:
+            assert str(e) == 'Require parameters cannot be none'
+
+    @patch('nipyapi.nifi.apis.processors_api.ProcessorsApi.get_processor')
+    @patch('nipyapi.nifi.apis.processors_api.ProcessorsApi.update_run_status')
+    def update_processor_state_raises_exception_on_failure(self, mock_update_run_status, mock_get_processor):
+        mock_response = MagicMock()
+        mock_response.revision.version = 1
+        mock_response.id = 'mock_processor_id'
+        mock_get_processor.return_value = mock_response
+        mock_update_run_status.side_effect = Exception('Failed to update processor state')
+
+        try:
+             self.nifi.update_process_state('mock_processor_id', 'RUNNING')
+        except Exception as e:
+            assert str(e) == 'Failed to update processor state'
+        mock_get_processor.assert_called_once_with(id='mock_processor_id')
+        mock_update_run_status.assert_called_once_with(
+            id='mock_processor_id',
+            body={'revision': {'clientId': 'mock_processor_id', 'version': 1}, 'state': 'RUNNING'}
+        )
+
+    @patch('nipyapi.nifi.apis.processors_api.ProcessorsApi.get_processor')
+    @patch('nipyapi.nifi.apis.processors_api.ProcessorsApi.update_run_status')
+    def test_stop_processor_stop_processor_successfully(self, mock_update_run_status, mock_get_processor):
+        mock_response = MagicMock()
+        mock_response.revision.version = 1
+        mock_response.id = 'mock_processor_id'
+        mock_get_processor.return_value = mock_response
+        mock_update_run_status.return_value = 'Success'
 
         result = self.nifi.stop_processor(self.processor_id, return_response=True)
 
         assert result == 'Success'
-        mock_update_process_state.assert_called_once_with(self.processor_id, 'STOPPED')
-
+        mock_update_run_status.assert_called_once_with(
+            id='mock_processor_id',
+            body={'revision': {'clientId': 'mock_processor_id', 'version': 1}, 'state': 'STOPPED'}
+        )
 
     def test_stop_processor_raises_exception_for_missing_processor_id(self):
         try:
@@ -55,17 +103,22 @@ class NifiProcessor(unittest.TestCase):
         except Exception as e:
             assert str(e) == 'Require parameters cannot be none'
 
-    # @patch('NifiLibrary.NifiLibrary.NifiLibrary.update_process_state')
-    # def test_stop_processor_logs_error_on_failure(self, mock_update_process_state):
-    #     mock_update_process_state.side_effect = Exception('Failed to stop processor')
-    #
-    #     try:
-    #         self.nifi.stop_processor(self.processor_id)
-    #     except Exception as e:
-    #         assert str(e) == 'Failed to stop processor'
-    #     mock_update_process_state.assert_called_once_with(self.processor_id, 'STOPPED')
-    #
-    # @patch('NifiLibrary.NifiLibrary.NifiLibrary.update_process_state')
+    @patch('nipyapi.nifi.apis.processors_api.ProcessorsApi.get_processor')
+    @patch('nipyapi.nifi.apis.processors_api.ProcessorsApi.update_run_status')
+    def test_stop_processor_logs_error_on_failure(self, mock_update_run_status, mock_get_processor):
+        mock_response = MagicMock()
+        mock_response.revision.version = 1
+        mock_response.id = 'mock_processor_id'
+        mock_get_processor.return_value = mock_response
+        mock_update_run_status.return_value = 'Success'
+        mock_update_run_status.side_effect = Exception('Failed to stop processor')
+
+        try:
+            self.nifi.stop_processor(self.processor_id)
+        except Exception as e:
+            assert str(e) == 'Failed to stop processor'
+
+    # @patch('NifiLibrary.NifiLibrary.update_process_state')
     # def test_start_processor_starts_processor_successfully(self, mock_update_process_state):
     #     mock_update_process_state.return_value = 'Success'
     #
