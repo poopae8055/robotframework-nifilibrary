@@ -4,13 +4,14 @@ python:
 - '3.9'
 install: pip install -r requirements.txt
 script:
-- pytest --cov --junitxml=junit.xml
+- pytest -vv --cov=./ --cov-report=xml
+- codecov
 - make clean docs dist
-deploy:
-  provider: pypi
-  username: __token__
-  password:
-    secure: geJS/V5In00iDLNUuBYwoAoALUC1xr+q5XhOakix5sHmCb0ohMnvmZx81rjX1gdunDXAT24Qq+0VGhRw6vz7+Ndf29vvRHYbeWvGLFupt1kxSJ46y2GMfQCusrsmqx8Umh5B9cy8DiFqFFRfjt5Xl/24ueMoAmYzjKKwCNt/1cZ6AaLbxbMTErDFBS4cBpevoOMtEkvpPerYCUSAiwk6EeueYjBFntWH3K9mV1Xd5u54L1XbnBnNCs09DL7yeYoF7g0xs+gBxEUUcM3KXVGp5+RDHA65EhtND7hFdgIvW+fTgNmH/UCvenT9XcTu9iEtJhlXlwaqS49d4DZ6kuoUJ8c2PVeZfFAoD04VFPP6/uyvhg+UXbvkE4vprJ1Ccx/nL/WWH9PSLGWh1VHIXsVxbJgMA5ZK4FizNds1HX90RGSPYnHQuiO2R6aPgf+03t0Uq8pmo0B/ojYdP+ySi0+4AHmxdUsz0051IjvNz5aw3ufmM/WrnIzrOmS+o0/fwa1sVaucIl+ob1kEWLn736bU4f+jnfxrbIM8Mq0m6Z6rGaomuIcS8l3dsCNdEQNvg08eK8IzA6FJRwCGxXHs3g5Ww8OcD6LxYH0En62dM9DW8KFF5nK2wfk1IdN3SMsnnhP8x0GSNtiMHqNE5eN8Sx45nT8SGDu4n6WFs1xnBrba2xY=
-  on:
-    tags: true
-    branch: master
+#deploy:
+#  provider: pypi
+#  username: __token__
+#  password:
+#    secure: geJS/V5In00iDLNUuBYwoAoALUC1xr+q5XhOakix5sHmCb0ohMnvmZx81rjX1gdunDXAT24Qq+0VGhRw6vz7+Ndf29vvRHYbeWvGLFupt1kxSJ46y2GMfQCusrsmqx8Umh5B9cy8DiFqFFRfjt5Xl/24ueMoAmYzjKKwCNt/1cZ6AaLbxbMTErDFBS4cBpevoOMtEkvpPerYCUSAiwk6EeueYjBFntWH3K9mV1Xd5u54L1XbnBnNCs09DL7yeYoF7g0xs+gBxEUUcM3KXVGp5+RDHA65EhtND7hFdgIvW+fTgNmH/UCvenT9XcTu9iEtJhlXlwaqS49d4DZ6kuoUJ8c2PVeZfFAoD04VFPP6/uyvhg+UXbvkE4vprJ1Ccx/nL/WWH9PSLGWh1VHIXsVxbJgMA5ZK4FizNds1HX90RGSPYnHQuiO2R6aPgf+03t0Uq8pmo0B/ojYdP+ySi0+4AHmxdUsz0051IjvNz5aw3ufmM/WrnIzrOmS+o0/fwa1sVaucIl+ob1kEWLn736bU4f+jnfxrbIM8Mq0m6Z6rGaomuIcS8l3dsCNdEQNvg08eK8IzA6FJRwCGxXHs3g5Ww8OcD6LxYH0En62dM9DW8KFF5nK2wfk1IdN3SMsnnhP8x0GSNtiMHqNE5eN8Sx45nT8SGDu4n6WFs1xnBrba2xY=
+#  on:
+#    tags: true
+#    branch: master
