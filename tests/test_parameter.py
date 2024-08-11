@@ -1,4 +1,4 @@
-from nifi_library.NifiLibrary import NifiLibrary
+from NifiLibrary.NifiLibrary import NifiLibrary
 import unittest
 from unittest.mock import MagicMock, patch
 
@@ -12,9 +12,11 @@ class NifiParameterTest(unittest.TestCase):
         self.parameter_name = "name"
         self.parameter_value = "Mr.AAA"
 
-    @patch('nifi_library.NifiLibrary.get_process_group')
+    @patch('NifiLibrary.NifiLibrary.get_process_group')
     @patch('nipyapi.nifi.apis.process_groups_api.ProcessGroupsApi.update_process_group')
-    def test_updating_parameter_context_succeeds(self, mock_update_process_group, mock_get_process_group):
+    @patch('nipyapi.nifi.apis.process_groups_api.ProcessGroupsApi.get_process_group', return_value=MagicMock())
+    def test_updating_parameter_context_succeeds(self, mock_get_process_group_api, mock_update_process_group,
+                                                 mock_get_process_group):
         self.revision = MagicMock(version=1)
         mock_process_group_response = MagicMock(version=1)
         mock_get_process_group.return_value = mock_process_group_response
