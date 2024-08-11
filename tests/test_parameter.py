@@ -71,7 +71,6 @@ class NifiParameterTest(unittest.TestCase):
             self.nifi.get_parameter_context('example_id')
         self.assertTrue('API call failed' in str(context.exception))
 
-    @patch('NifiLibrary.NifiLibrary.get_parameter_context')
     @patch('nipyapi.nifi.apis.parameter_contexts_api.ParameterContextsApi.update_parameter_context')
     @patch('nipyapi.nifi.apis.parameter_contexts_api.ParameterContextsApi.get_parameter_context', return_value=MagicMock())
     def test_update_parameter_value_without_stopped_component_updates_parameter_successfully(self,
