@@ -1,6 +1,6 @@
 ignore:
   - "setup.py"
   - "atest/nifi_test.robot"
-  - "tests/.*"
+  - "tests/*"
 codecov:
  token: 9a999463-cdc2-4a83-98f1-88711511ddad
