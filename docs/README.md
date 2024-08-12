@@ -1,4 +1,6 @@
 [![codecov](https://codecov.io/github/poopae8055/robotframework-nifilibrary/branch/main/graph/badge.svg?token=UWQ02FZKKK)](https://codecov.io/github/poopae8055/robotframework-nifilibrary)
+[![Build Status](https://app.travis-ci.com/poopae8055/robotframework-nifilibrary.svg?token=qyEYwbjyGpqh4SudnCnQ&branch=main)](https://app.travis-ci.com/poopae8055/robotframework-nifilibrary)
+[![PyPI version](https://badge.fury.io/py/robotframework-nifilibrary.svg)](https://badge.fury.io/py/robotframework-nifilibrary)
 
 # NifiLibrary
 `NifiLibrary` is a [Robot Framework](http://www.robotframework.org) test library which provides keywords to work with Apache Nifi api
