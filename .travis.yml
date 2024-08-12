@@ -8,10 +8,9 @@ install:
   - pip install --upgrade urllib3==1.26.15
 
 script:
-  - pytest
-#- pytest -vv --cov=./ --cov-report=xml
-#- codecov
-#- make clean docs dist
+  - pytest -vv --cov=./ --cov-report=xml
+  - codecov
+  - make clean docs dist
 #deploy:
 #  provider: pypi
 #  username: __token__
