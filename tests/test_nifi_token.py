@@ -1,4 +1,4 @@
-from NifiLibrary.NifiLibrary import NifiLibrary
+from NifiLibrary import NifiLibrary
 import unittest
 from unittest.mock import patch
 
