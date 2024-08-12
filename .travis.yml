@@ -10,7 +10,6 @@ install:
 script:
   - pytest -vv --cov=./ --cov-report=xml
   - codecov
-  - make clean docs dist
 #deploy:
 #  provider: pypi
 #  username: __token__
