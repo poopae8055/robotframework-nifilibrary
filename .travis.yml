@@ -9,7 +9,6 @@ install:
 
 script:
   - pytest
-  - echo "next stage: deploy"
 #- pytest -vv --cov=./ --cov-report=xml
 #- codecov
 #- make clean docs dist
