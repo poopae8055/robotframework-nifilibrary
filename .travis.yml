@@ -3,22 +3,7 @@ language: python
 python:
 - '3.9'
 
-before_install:
-  - sudo apt-get update
-  - sudo apt-get install -y build-essential checkinstall zlib1g-dev
-  - wget https://www.openssl.org/source/openssl-1.1.1l.tar.gz
-  - tar -xzvf openssl-1.1.1l.tar.gz
-  - cd openssl-1.1.1l
-  - ./config
-  - make
-  - sudo make install
-  - sudo ldconfig
-  - cd ..
-
 install:
-  - python -m venv venv
-  - source venv/bin/activate
-  - pip install --upgrade pip
   - pip install -r requirements.txt
 
 script:
