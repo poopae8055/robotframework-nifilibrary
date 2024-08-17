@@ -51,6 +51,32 @@ class NifiLibrary(object):
             logger.error(str(ex))
             raise Exception(str(ex))
 
+    @keyword('Set Access Token')
+    def set_service_auth_token(self, access_token, return_response=False):
+        """
+        Connect to NiFi and set the service authentication token.
+
+        Arguments:
+        - access_token: The authentication token to be set.
+        - return_response: Boolean flag to indicate if the response should be returned. Default is False.
+
+        Returns:
+        - If return_response is True, returns the response from setting the service auth token.
+
+        Examples:
+        | Set Access Token |  ${token} |
+        """
+        if not access_token:
+            raise Exception('Require parameters cannot not be none')
+        try:
+            # Set the service auth token
+            response = nipyapi.security.set_service_auth_token(token=access_token, token_name='tokenAuth', service='nifi')
+            if return_response:
+                return response
+        except Exception as ex:
+            logger.error(str(ex))
+            raise Exception(str(ex))
+
     @keyword('Start Process Group')
     def start_process_group(self, processor_group_id=None, return_response=False):
         """ Start Process Group
