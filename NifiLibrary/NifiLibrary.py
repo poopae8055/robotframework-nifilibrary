@@ -18,18 +18,19 @@ class NifiLibrary(object):
 
     @keyword('Connect To Nifi')
     def connect_to_nifi(self, base_url=None, username=None, password=None, return_response=False):
-        """ Connect to NiFi and obtain an access token.
+        """
+        Connect to NiFi and obtain an access token.
 
-            Arguments:
-            - base_url: NiFi domain (e.g., 'https://localhost:8443')
-            - username: NiFi username
-            - password: NiFi password
-            - return_response: True to return token, False to return None
+        Arguments
+            - base_url (str): NiFi domain (e.g., 'https://localhost:8443')
+            - username (str): NiFi username
+            - password (str): NiFi password
+            - return_response (bool, optional): True to return token, False to return None. Defaults to False.
             Returns:
             - access_token: The obtained access token
 
-        Examples:
-        | Connect To Nifi |  https://localhost:8443 | username | password |
+        Examples
+        | Connect To Nifi |  https://localhost:8443 | ${username} | ${password} |
 
         """
         if not base_url or not username or not password:
@@ -51,16 +52,50 @@ class NifiLibrary(object):
             logger.error(str(ex))
             raise Exception(str(ex))
 
+    @keyword('Set Access Token')
+    def set_service_auth_token(self, access_token=None, return_response=False):
+        """
+        Connect to NiFi and set the service authentication token.
+
+        Arguments
+        - access_token (str): The authentication token to be set.
+        - return_response (bool, optional): Boolean flag to indicate if the response should be returned. Default is False.
+
+        Returns
+        - If return_response is True, returns the response from setting the service auth token.
+
+        Examples
+        | Set Access Token |  ${token} |
+        """
+        if not access_token:
+            raise Exception('Require parameters cannot not be none')
+        try:
+            # Set the service auth token
+            response = nipyapi.security.set_service_auth_token(token=access_token, token_name='tokenAuth', service='nifi')
+            if return_response:
+                return response
+        except Exception as ex:
+            logger.error(str(ex))
+            raise Exception(str(ex))
+
     @keyword('Start Process Group')
     def start_process_group(self, processor_group_id=None, return_response=False):
-        """ Start Process Group
-        Arguments:
-            - base_url: NiFi domain
-            - token: NiFi token it can be get by using <Get Nifi Token> keywords
-            - processor_group_id: id of processor group
+        """
+        Start Process Group
 
-        Examples:
-        | Start Process Group | {processor_group_id} |
+         This method starts a specified NiFi process group by updating its state to 'RUNNING'.
+
+        Arguments
+            - base_url (str): NiFi domain
+            - token (str): NiFi token it can be get by using <Get Nifi Token> keywords
+            - processor_group_id (str): id of processor group
+            - return_response (bool, optional): Boolean flag to indicate if the response should be returned. Default is False.
+
+        Returns
+            The response from the update process group state call if return_response is True.
+
+        Examples
+        | Start Process Group | ${processor_group_id} |
 
         """
         if not processor_group_id:
@@ -75,12 +110,19 @@ class NifiLibrary(object):
 
     @keyword('Stop Process Group')
     def stop_process_group(self, processor_group_id=None, return_response=False):
-        """ Stop Process Group
+        """
+        Stop a NiFi process group.
 
-        Arguments:
-            - processor_group_id: id of processor group
+        This method stops a specified NiFi process group by updating its state to 'STOPPED'.
 
-        Examples:
+        Arguments
+            - processor_group_id (str): id of processor group
+            - return_response (bool, optional): Boolean flag to indicate if the response should be returned. Default is False.
+
+        Returns
+            The response from the update process group state call if return_response is True.
+
+        Examples
         | Stop Process Group |  {processor_id} |
 
         """
@@ -95,14 +137,18 @@ class NifiLibrary(object):
             raise Exception(str(ex))
 
     @keyword('Get Process Group')
-    def get_process_group(self, processor_group_id=None):
-        """ To get process group detail
+    def get_process_group(self, processor_group_id):
+        """
+        To get process group detail
 
-        Arguments:
-            - processor_group_id: id of processor group
+        Arguments
+            - processor_group_id (str): id of processor group
 
-        Examples:
-        | Get Process Group | {processor_group_id} |
+         Returns
+             The response containing the process group details
+
+        Examples
+        | Get Process Group | ${processor_group_id} |
 
         """
         if not processor_group_id:
@@ -118,9 +164,15 @@ class NifiLibrary(object):
 
     @keyword('Get Root Process Group')
     def get_root_process_group(self):
-        """ To get root process group detail
+        """
+         Get root process group detail.
 
-        Examples:
+        This method retrieves the details of the root process group in NiFi.
+
+        Returns
+            The response containing the root process group details.
+
+        Examples
         | ${res}= | Get Root Process Group |
 
         """
@@ -136,14 +188,20 @@ class NifiLibrary(object):
     @keyword('Update Process Group Parameter Context')
     def update_process_group_parameter_context(self, processor_group_id=None,
                                                param_context_id=None):
-        """ To update parameter context of process group
+        """
+        Update the parameter context of a NiFi process group.
 
-        Arguments:
-            - processor_group_id: id of processor group
-            - param_context_id: id of parameter context
+        This method updates the parameter context of a specified NiFi process group.
 
-        Examples: | Update Process Group Parameter Context |  {processor_group_id} | {param_context_name}
+        Arguments
+            - processor_group_id (str): The ID of the processor group.
+            - param_context_id (str): The ID of the parameter context.
 
+        Returns
+            The response from the update process group call.
+
+        Examples
+            | Update Process Group Parameter Context | ${processor_group_id} | ${param_context_name} |
         """
         if not processor_group_id or not param_context_id:
             raise Exception('Require parameters cannot be none')
@@ -167,13 +225,19 @@ class NifiLibrary(object):
     @keyword('Get Parameter Context')
     def get_parameter_context(self, param_context_id=None):
         """
-         To get parameter context detail
+        Get parameter context detail.
 
-         Arguments:
-            - param_context_id: parameter context id
+        This method retrieves the details of a specified parameter context in NiFi.
 
-        Examples:
-        | Get Parameter Contexts |  https://localhost:8443 | {token} | {param_context_id}
+        Arguments
+            - param_context_id (str): The ID of the parameter context.
+
+        Returns
+            The response containing the parameter context details.
+
+
+        Examples
+        | Get Parameter Contexts |  https://localhost:8443 | ${token} | ${param_context_id}
 
         """
         if not param_context_id:
@@ -192,19 +256,22 @@ class NifiLibrary(object):
     def update_parameter_value_without_stopped_component(self, param_context_id=None, parameter_name=None,
                                                          parameter_value=None):
         """
-         To update parameter value at parameter context.
-         nifi.apache.org:
-            this request will fail if any component is running and is referencing a Parameter in the Parameter Context.
-         In order to update a Parameter in a Parameter Context, all components that reference the Parameter must be stopped.
+        Update parameter value at parameter context without stopping components.
 
-         Arguments:
-            - param_context_id: parameter context id
-            - parameter_name: The updated parameter name
-            - parameter_value: The updated parameter value
+        This method updates the value of a parameter in a specified parameter context in NiFi.
+        Note that this request will fail if any component is running and is referencing a Parameter in the Parameter Context.
+        In order to update a Parameter in a Parameter Context, all components that reference the Parameter must be stopped.
 
-        Examples:
-        | Update Parameter Value Without Stopped Component |  {param_context_id} | {parameter_name} | {parameter_value}
+        Arguments
+            - param_context_id (str): The ID of the parameter context.
+            - parameter_name (str): The name of the parameter to update.
+            - parameter_value (str): The new value of the parameter.
 
+        Returns
+            The response from the update parameter context call.
+
+        Examples
+            | Update Parameter Value Without Stopped Component | ${param_context_id} | ${parameter_name} | ${parameter_value} |
         """
         if not param_context_id or not parameter_name or not parameter_value:
             raise Exception('Require parameters cannot be none')
@@ -232,21 +299,25 @@ class NifiLibrary(object):
     def update_parameter_value_with_stopped_component(self, param_context_id=None, parameter_name=None,
                                                       parameter_value=None, return_response=False):
         """
-          To update parameter value at parameter context. If return response = True means the updated parameter successfully.
-          But if return response = False means the updated parameter is not successfully.
-          nifi.apache.org:
-             Changing the value of a Parameter may require that one or more components be stopped
-             and restarted, so this action may take significantly more time than many other REST API actions.
+        Update parameter value at parameter context with stopped components.
 
-          Arguments:
-             - param_context_id: parameter context id
-             - parameter_name: The updated parameter name
-             - parameter_value: The updated parameter value
+        This method updates the value of a parameter in a specified parameter context in NiFi.
+        Note that changing the value of a Parameter may require that one or more components be stopped
+        and restarted, so this action may take significantly more time than many other REST API actions.
 
-         Examples:
-         | Update Parameter Value With Stopped Component |  {param_context_id} | {parameter_name} | {parameter_value}
+        Arguments
+            - param_context_id (str): The ID of the parameter context.
+            - parameter_name (str): The name of the parameter to update.
+            - parameter_value (str): The new value of the parameter.
+            - return_response (bool, optional): Boolean flag to indicate if the response should be returned. Default is False.
 
-         """
+
+        Returns
+            bool: True if the update is successful and return_response is True, otherwise None.
+
+        Examples
+            | Update Parameter Value With Stopped Component | ${param_context_id} | ${parameter_name} | ${parameter_value} |
+        """
         get_response = None
         sleep_time = 2
         num_retries = 4
@@ -295,10 +366,10 @@ class NifiLibrary(object):
         """
          To get processor detail
 
-         Arguments:
+         Arguments
             - processor_id: id of processor
 
-        Examples:
+        Examples
         | Get Processor |  {processor_id} |
 
         """
@@ -318,10 +389,10 @@ class NifiLibrary(object):
         """
          To stop processor
 
-         Arguments:
+         Arguments
             - processor_id: id of processor
 
-        Examples:
+        Examples
         | Stop Processor |  {processor_id} |
         | Stop Processor |  {processor_id} |  True |
 
@@ -341,10 +412,10 @@ class NifiLibrary(object):
         """
          To start processor
 
-         Arguments:
+         Arguments
             - processor_id: id of processor
 
-        Examples:
+        Examples
         | Start Processor |  {processor_id} |
         | Start Processor |  {processor_id} |  True |
 
@@ -364,10 +435,10 @@ class NifiLibrary(object):
         """
          To run once processor
 
-         Arguments:
+         Arguments
             - processor_id: id of processor
 
-        Examples:
+        Examples
         | Run Once Processor |  {processor_id} |
 
         """
@@ -386,10 +457,10 @@ class NifiLibrary(object):
         """
          To disable processor
 
-         Arguments:
+         Arguments
             - processor_id: id of processor
 
-        Examples:
+        Examples
         | Disable Processor |  {processor_id} |
 
         """
@@ -404,14 +475,14 @@ class NifiLibrary(object):
             raise Exception(str(ex))
 
     @keyword('Get processor state')
-    def get_processor_state(self, processor_id=None, return_response=False):
+    def get_processor_state(self, processor_id=None):
         """
          To get state of processor
 
-         Arguments:
+         Arguments
             - processor_id: id of processor
 
-        Examples:
+        Examples
         | Get Processor State | {processor_id} |
 
         """
@@ -470,10 +541,12 @@ class NifiLibrary(object):
     def update_process_state(self, processor_id=None, state=None):
         """
          To update processor state to "RUNNING" or "STOPPED" or "RUN_ONCE" or "DISABLE"
-         Argument:
+
+         Argument
             - processor_id: id of processor
             - state: state of processor
-        Example:
+
+        Example
         | Update Process State | {processor_id} | RUN_ONCE |
 
         """

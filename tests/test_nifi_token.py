@@ -36,5 +36,27 @@ class NifiTokenTest(unittest.TestCase):
             self.nifi.connect_to_nifi(self.base_url, self.username, self.password, True)
         self.assertTrue('API call failed' in str(context.exception))
 
+    @patch('nipyapi.security.set_service_auth_token')
+    def test_set_endpoint_called_correctly(self, mock_set_service_auth_token):
+        mock_set_service_auth_token.return_value = 'response'
+        result = self.nifi.set_service_auth_token('valid_token', return_response=True)
+        self.assertEqual(result, 'response')
+        mock_set_service_auth_token.assert_called_once_with(token='valid_token', token_name='tokenAuth', service='nifi')
+
+    @patch('nipyapi.security.set_service_auth_token')
+    def test_set_service_auth_token_raises_exception_on_none_token(self, mock_set_service_auth_token):
+        with self.assertRaises(Exception) as context:
+            self.nifi.set_service_auth_token(None)
+        self.assertTrue('Require parameters cannot not be none' in str(context.exception))
+        mock_set_service_auth_token.assert_not_called()
+
+    @patch('nipyapi.security.set_service_auth_token')
+    def test_set_service_auth_token_handles_exception(self, mock_set_service_auth_token):
+        mock_set_service_auth_token.side_effect = Exception('Error setting token')
+        with self.assertRaises(Exception) as context:
+            self.nifi.set_service_auth_token('valid_token')
+        self.assertTrue('Error setting token' in str(context.exception))
+        mock_set_service_auth_token.assert_called_once_with(token='valid_token', token_name='tokenAuth', service='nifi')
+
     if __name__ == '__main__':
         unittest.main()
