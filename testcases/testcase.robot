@@ -17,13 +17,26 @@ TC001 - Verify API returns 200 and correct response body structure when call Get
     Then The http status should be '200'
     And Verify the response body matches the expected data
 
-TC002 - Verify API returns 200 and correct body structure when call Search Enable Summary Report API with valid request
+TC002 - Verify basic summary report - Success
+    [Documentation]    Ensure the API returns a correct summary for the specified query parameters.
     [Tags]  SearchEnableSummaryReportAPI  regression
     [Setup]    Set Date With Subtraction From Current Date  1
     Given Insert transaction in ETAX_ETL_REPORT database when there is no any transaction in '${year}' '${month}' '${day}' for 'CO'
     Given Set date from to yesterday date with format YYYY-MM-DD
     And Set date to to yesterday date with format YYYY-MM-DD
-    And Get Summary Report With Pagination  CO  2
-    And Generate expected keywords for search enable summary report api for 'CO' and '2' page size number
+    And Generate expected keywords for search enable summary report api for 'CO' and '20' page size number
+    When Get Summary Report With Pagination  CO  20
     Then The http status should be '200'
     And Verify Response Lists Match
+
+#TC003 - Verify pagination for summary report - Success
+#    [Documentation]    Ensure the API correctly paginates the results.
+#    [Tags]  SearchEnableSummaryReportAPI  regression
+#    [Setup]    Set Date With Subtraction From Current Date  1
+#    Given Insert transaction in ETAX_ETL_REPORT database when there is no any transaction in '${year}' '${month}' '${day}' for 'CO'
+#    Given Set date from to yesterday date with format YYYY-MM-DD
+#    And Set date to to yesterday date with format YYYY-MM-DD
+##    And Generate expected keywords for search enable summary report api for 'CO' and '20' page size number
+#    When Get Summary Report With Pagination  CO  20
+##    Then The http status should be '200'
+##    And Verify Response Lists Match

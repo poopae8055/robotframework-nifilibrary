@@ -1,5 +1,6 @@
 *** Settings ***
 Resource        ../resources/imports.robot
+Resource        ./data_dictionary.robot
 Library           OracleDBConnector
 
 *** Keywords ***
@@ -103,37 +104,23 @@ Insert Default Transactions For Date
     [Arguments]    ${transactions}
     log  ${transactions}
     FOR    ${transaction}    IN    @{transactions}
-        log  ${transaction}
-        log  ${transaction.date}
-        log  ${transaction.use_case_code}
-        log  ${transaction.total_amount}
-        log  ${transaction.total_trans}
-        ${sql}    Set Variable  INSERT INTO ETAX_ETL.ETAX_ETL_REPORT (TRANS_DATE, USE_CASE_CODE, TYPE, TOTAL_AMOUNT, TOTAL_TRANS, DOC_STATUS, CREATED_DATE, CREATED_BY) VALUES (TO_DATE('${transaction.date}', 'YYYY-MM-DD'), '${transaction.use_case_code}', 'VAT', ${transaction.total_amount}, ${transaction.total_trans}, '${transaction.doc_status}', SYSDATE, 'etax-etl')
+        ${sql}    Set Variable  INSERT INTO ETAX_ETL.ETAX_ETL_REPORT (TRANS_DATE, USE_CASE_CODE, TYPE, TOTAL_AMOUNT, TOTAL_TRANS, DOC_STATUS, CREATED_DATE, CREATED_BY) VALUES (TO_DATE('${transaction.date}', 'YYYY-MM-DD'), '${transaction.use_case_code}', 'VAT', ${transaction.total_amount}, ${transaction.total_trans}, '${transaction.doc_status}', SYSDATE, 'robot_ereport')
         Run SQL action    ${sql}
     END
 
-Create data dictionary to insert transction to ETAX_ETL_REPORT
-    [Arguments]    ${date}  ${use_case_code}
-    ${transactions}    Create List
-    ${transaction}    Create Dictionary
-    ...    date=${date}
-    ...    use_case_code=${use_case_code}
-     ...    total_amount=100.50
-     ...    total_trans=5
-     ...    doc_status=A
-    Append To List    ${transactions}    ${transaction}
-    ${transaction}    Create Dictionary
-     ...    date=${date}
-     ...    use_case_code=${use_case_code}
-     ...    total_amount=200.00
-     ...    total_trans=2
-     ...    doc_status=C
-    Append To List    ${transactions}    ${transaction}
-    ${transaction}    Create Dictionary
-    ...    date=${date}
-    ...    use_case_code=${use_case_code}
-    ...    total_amount=0.00
-    ...    total_trans=0
-    ...    doc_status=O
-    Append To List    ${transactions}    ${transaction}
-    Set Test Variable    ${transactions}
+Insert Transactions For Date Range If Not Exist
+    [Documentation]    Inserts default transaction data into the ETAX_ETL_REPORT database for a date range if no transactions exist for those dates.
+    ...    *Arguments:*
+    ...        * `${date_from}` - The start date of the range (YYYY-MM-DD).
+    ...        * `${date_to}` - The end date of the range (YYYY-MM-DD).
+    ...        * `${use_case_code}` - The use case code for the transactions.
+    [Arguments]    ${date_from}    ${date_to}    ${use_case_code}
+    ${date_from_datetime}    Convert Date    ${date_from}    result_format=%Y-%m-%d
+    ${date_to_datetime}    Convert Date    ${date_to}    result_format=%Y-%m-%d
+    WHILE    ${date_from_datetime} <= ${date_to_datetime}
+        ${date_string}    Convert Date    ${date_from_datetime}    result_format=%Y-%m-%d
+        ${count_transaction}    Run Keyword And Return Status    Check If Transaction Exists For Date    ${date_string}
+        Run Keyword If    ${count_transaction} == False    Create data dictionary to insert transction to ETAX_ETL_REPORT  ${date_string}  ${use_case_code}
+        Run Keyword If    ${count_transaction} == False    Insert Default Transactions For Date    ${transactions}
+        ${date_from_datetime}    Add Time To Date    ${date_from_datetime}    1 day
+    END
