@@ -1,0 +1,6 @@
+etax_report_host: https://acm-etax-report-service-qa.private-thn.ascendmoney.io/acm-etax-report-service
+
+etax_database:
+  username: etax_etl_robot
+  password: g1^Q093X1N!&&%IHTROf
+  url: 10.14.16.3:2992/stgfrontsrv1
