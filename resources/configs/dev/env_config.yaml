@@ -5,93 +5,10 @@ etax_database:
   password: g1^Q093X1N!&&%IHTROf
   url: 10.14.16.3:2992/devfrontsrv1
 
-core_service_database:
-  username: ETAXCOREROB
-  password: PKcmriO#131a2qMbZ
-  url: (DESCRIPTION=(CONNECT_TIMEOUT=1)(RETRY_COUNT=3)(LOAD_BALANCE=no)(FAILOVER=yes)(ADDRESS_LIST=(LOAD_BALANCE=yes)(FAILOVER=yes)(ADDRESS=(PROTOCOL=TCP)(HOST=10.14.16.143)(PORT=2992))(ADDRESS=(PROTOCOL=TCP)(HOST=10.14.16.144)(PORT=2992)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=devnextsrv1)(FAILOVER_MODE=(TYPE=SELECT)(METHOD=BASIC)(RETRIES=180)(DELAY=5))))
-
 sftp:
   host: sftp.ascendmoney-dev.internal
-  username: etax.sftp-internal
-  password: qy0G5ZbiaIbt1cIE
+  username: etax-test.sftp-internal
+  password: !@#$1412QSDfedasdFSDw3#@
   file_path: /data/s3-sftp/acm-etax-etl/etax.sftp-internal/dev/iam/TrueMoney/Etax/Customer/OUT/
-  merchant_path: /data/s3-sftp/acm-etax-etl/etax.sftp-internal/dev/iam/TrueMoney/Etax/Merchant/OUT/
-  utiba_etax_report_path: /data/s3-sftp/acm-etax-etl/etax.sftp-internal/dev/UtibaETaxReport/
   utiba_etax_report_relative_path: etax.sftp-internal/dev/UtibaETaxReport/
 
-#rabbit
-rabbitmq_host: rabbitmq.th1n.ascendmoney.io
-rabbitmq_http_port: 15672
-rabbitmq_amqp_port: 5672
-rabbitmq_username: sysuser
-rabbitmq_password: sysuser
-rabbitmq_virtual_host: acm-dev
-etax_rabbitmq_exchange_name: etax-service
-etax_etl_rabbitmq_routing_key: etax-service.etax-etl.create
-etax_cancel_etl_rabbitmq_routing_key: etax-service.etax-etl.cancel
-
-nifi:
-  host: https://nifi-gateway-dev.private-thn.ascendmoney.io/
-  url: https://nifi-gateway-dev.private-thn.ascendmoney.io/nifi/
-  username: nifi-robot
-  password: '@Welcome1'
-  process_id: f972bf1b-64cf-396a-aa4b-f381d8d0c464
-  process_name: 'Write File'
-  zip_file_process_id: 6737297c-a7a1-3e28-a479-3b0b0fd001ae
-  zip_file_process_name: 'Zip'
-  robot_param_context_id: ebb10617-0184-1000-f143-3b0d319e8ed6
-  robot_component_name: robot-context-dev
-  dev_param_context_id: 96db3da3-652c-3ce9-5535-252334377b2d
-  dev_component_name: Dev
-  s3_process_group_id: c5a030a7-b4fe-3326-a1e0-4ebddc169c63
-  s3_pop_process_id: 6d135f02-4d89-3bde-5e7f-b8e366c07931
-  s3_pop_process_name: 'ListS3 POP Manual'
-  s3_alipay_process_id: 260d1b9d-0a26-3ec6-c471-b543400f0cf0
-  s3_alipay_process_name: 'ListS3 Alipay Manual'
-  file_running_no_pop_process_id: 30231be4-eabe-362d-d910-2d3899efc657
-  file_running_no_pop_process_name: 'Setup Filename Running Number'
-  file_running_no_alipay_process_id: 471b79d2-c0e2-3c15-0a39-5db1806e3c67
-  file_running_no_alipay_process_name: 'Setup Filename Running Number'
-  robot_starter_process_id: 8edfe614-07cd-3890-4cbb-ae61a4bbf984
-  robot_starter_process_name: 'ROBOT starter'
-  set_date_attribute_processor_id: b3cd983f-24e3-36dc-1a02-cdaf256f371b
-  set_date_attribute_processor_name: 'Set Manual Flag and Init Date Attributes'
-  interval_query_from_core_process_group_id: 70184e49-0187-1000-1174-f31ddb3ead0e
-  interval_query_from_core_process_group_name: 'INTERVAL_QUERY_FROM_CORE_AND_SAVE'
-  manual_run_all_use_case_process_id: 190ef74a-5f3d-3387-ffc5-55c9f1b25f99
-  manual_run_all_use_case_process_name: 'Manual_RunOnceAllUseCases'
-  manual_run_once_type_agent_ref_id: 53f01bc1-60ea-328e-c647-f3780a0752b0
-  manual_run_once_type_agent_ref_name: 'Manual_RunOnce_TypeAgentRef'
-  validate_date_manual_id: 440898f8-13b8-331b-9565-8eb7e399ff51
-  validate_date_manual_name: 'Validate Date Manual'
-  log_date_manual_is_unset_id: 6c1ef55e-f6b4-38ad-ffe4-63e13de02ef5
-  log_date_manual_is_unset_name: 'Log Date manual is unset'
-  validate_date_parameter_context_id: 82c1cea5-07c9-32fa-1ad2-dbde48bb12ec
-  validate_date_parameter_context_name: 'Validate Date Parameter Context'
-  log_date_parameter_context_is_unset_id: 73c87f28-b93b-3dc4-eda4-cb41844dc6e0
-  log_date_parameter_context_is_unset_name: 'Log Date Parameter Context is Unset'
-  assign_date_to_attribute_value_id: afc79d58-d7a1-307c-ca35-b83e627962b4
-  assign_date_to_attribute_value_name: 'Assign date to attribute value'
-  manual_run_specific_use_case_id: a3f38b50-e237-333f-d871-17eb1761ce49
-  manual_run_specific_use_case_name: 'Manual Run Specific Use-case'
-  log_manual_trigger_specific_use_case_id: 97d91576-c449-3942-c1a9-84fed4b3308d
-  nifi_log_manual_trigger_specific_use_case_name: 'Log Manual Trigger Specific Use-case'
-  manual_run_once_per_use_case_id: e2155716-1db2-3b50-e86e-3d4fed2e6863
-  manual_run_once_per_use_case_name: 'Manual_RunOncePerUseCaseCode'
-  summary_data_flow_manual_run_query_doc_status_id: 4116012c-5b54-3d16-69cc-604bdd1f892b
-  summary_data_flow_manual_run_query_doc_status_name: 'ManualRunQueryDocStatus'
-  schedule_write_file_processor_group_id: eb72783b-0184-1000-bae3-efc10eacdb33
-  schedule_write_file_processor_group_name: 'SCHEDULE_WRITE_FILE_ETAX_ETL_SERVICE'
-  interval_query_flow_ManualRunAllCancelUseCase_id: ae01d518-e7c8-3d3a-cbdd-8d24928fda76
-  interval_query_flow_ManualRunAllCancelUseCase_name: 'ManualRunAllCancelUseCase'
-     
-s3:
-  ALI_bucket_name: awsa-ttmn-operation-file
-  ALI_bucket_path: internal/taxinvoice/20230102/
-  ALI_Corporate_file_name: Corporate_20230102.csv
-  ALI_Individual_file_name: Individual_20230102.csv
-  ALI_Corporate_expected_file: expected_ali_corporate_20230102.csv
-  ALI_Individual_expected_file: expected_ali_individual_20230102.csv
-  POP_bucket_name: awsa-ttmn-operation-file
-  POP_bucket_path: internal/APLUS/taxinvoice/
-  POP_Corporate_file_name: Corporate_robot.csv

@@ -4,3 +4,10 @@ etax_database:
   username: etax_etl_robot
   password: g1^Q093X1N!&&%IHTROf
   url: 10.14.16.3:2992/stgfrontsrv1
+
+sftp:
+  host: sftp.ascendmoney-dev.internal
+  username: etax-test.sftp-internal
+  password: !@#$1412QSDfedasdFSDw3#@
+  file_path: /data/s3-sftp/acm-etax-etl/etax.sftp-internal/dev/iam/TrueMoney/Etax/Customer/OUT/
+  utiba_etax_report_relative_path: etax.sftp-internal/dev/UtibaETaxReport/
