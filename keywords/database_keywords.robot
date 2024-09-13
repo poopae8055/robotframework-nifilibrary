@@ -75,7 +75,8 @@ Insert transaction in ETAX_ETL_REPORT database when there is no any transaction 
     ...        * `${month}` - The month (MM) of the date.
     ...        * `${day}` - The day (DD) of the date.
     ${date}    Set Variable    ${year}-${month}-${day}
-    ${count_transaction}    Run Keyword And Return Status    Check If Transaction Exists For Date    ${date}
+    ${count_transaction}    Check If Transaction Exists For Date    ${date}
+    log  ${count_transaction}
     Run Keyword If    ${count_transaction} == False    Create data dictionary to insert transction to ETAX_ETL_REPORT  ${date}  ${use_case_code}
     Run Keyword If    ${count_transaction} == False    Insert Default Transactions For Date    ${transactions}
 
@@ -88,8 +89,10 @@ Check If Transaction Exists For Date
     ${query_results}    Query etax transaction    ${sql}
     ${count}    Set Variable    ${query_results[0]['TOTAL_TRANS']}
     Log    Count: ${count}
-    Run Keyword If    ${count} > 0    Return From Keyword    True
-    Return From Keyword    False
+    ${flag}    Run Keyword If    ${count} != 0   Set Variable     True
+    ...  ELSE  Set Variable     False
+    log  ${flag}
+    [Return]    ${flag}
 
 Insert Default Transactions For Date
     [Documentation]    Inserts default transaction data into the ETAX_ETL_REPORT database for a specific date.
@@ -117,10 +120,11 @@ Insert Transactions For Date Range If Not Exist
     [Arguments]    ${date_from}    ${date_to}    ${use_case_code}
     ${date_from_datetime}    Convert Date    ${date_from}    result_format=%Y-%m-%d
     ${date_to_datetime}    Convert Date    ${date_to}    result_format=%Y-%m-%d
-    WHILE    ${date_from_datetime} <= ${date_to_datetime}
+    WHILE    $date_from_datetime <= $date_to_datetime
         ${date_string}    Convert Date    ${date_from_datetime}    result_format=%Y-%m-%d
-        ${count_transaction}    Run Keyword And Return Status    Check If Transaction Exists For Date    ${date_string}
+        ${count_transaction}    Check If Transaction Exists For Date    ${date_string}
+        log  ${count_transaction}
         Run Keyword If    ${count_transaction} == False    Create data dictionary to insert transction to ETAX_ETL_REPORT  ${date_string}  ${use_case_code}
         Run Keyword If    ${count_transaction} == False    Insert Default Transactions For Date    ${transactions}
-        ${date_from_datetime}    Add Time To Date    ${date_from_datetime}    1 day
+        ${date_from_datetime}    Add Time To Date    ${date_from_datetime}    1 day  result_format=%Y-%m-%d
     END
