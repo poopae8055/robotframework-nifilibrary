@@ -38,7 +38,7 @@ TC003 - Pagination for summary report - Success
     [Tags]  SearchEnableSummaryReportAPI   regression  success
     Given Set Date From to yesterday - 2
     And Set Date From to yesterday - 1
-    Given Insert Transactions For Date Range If Not Exist  ${date_from}    ${date_to}    CO
+    And Insert Transactions For Date Range If Not Exist  ${date_from}    ${date_to}    CO
     And Generate Expected Keywords For Search Enable Summary Report API  CO  3  ${TRUE}
     When Get Summary Report With Pagination  CO  3
     Then The http status should be '200'
@@ -88,7 +88,7 @@ TC007 - Download zip file with no data found on SFTP - Fail
 *** Keywords ***
 Prepare the transaction with Mockup ZIP_FILE_PATH
     [Documentation]    Prepares transactions for testing by deleting existing transactions for the date,
-     ...    inserting default transactions, and then updating the ZIP_FILE_PATH to a mockup path.
+    ...    inserting default transactions, and then updating the ZIP_FILE_PATH to a mockup path.
     ...    This simulates a scenario where transactions exist in the database but the corresponding ZIP files are not found on the SFTP server,
     ...    leading to a 404 error.
     Delete Default Transactions For Date  CO
