@@ -87,6 +87,10 @@ TC007 - Download zip file with no data found on SFTP - Fail
 
 *** Keywords ***
 Prepare the transaction with Mockup ZIP_FILE_PATH
+    [Documentation]    Prepares transactions for testing by deleting existing transactions for the date,
+     ...    inserting default transactions, and then updating the ZIP_FILE_PATH to a mockup path.
+    ...    This simulates a scenario where transactions exist in the database but the corresponding ZIP files are not found on the SFTP server,
+    ...    leading to a 404 error.
     Delete Default Transactions For Date  CO
     Insert Default Transactions For Date  CO
     Update Default Transactions To Mockup ZIP_FILE_PATH  CO
