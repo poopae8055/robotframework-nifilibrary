@@ -35,7 +35,7 @@ Upload File If Not Exists
 
 Download file
     [Arguments]    ${file_path}  ${response_content}
-    Create Binary File    ${file_path}    ${response_content}
+    OS.Create Binary File    ${file_path}    ${response_content}
 
 Delete Downloaded Files Folder If Exists
     [Documentation]    Deletes the 'downloaded_files' folder if it exists.
