@@ -8,8 +8,8 @@ Create data dictionary to insert transction to ETAX_ETL_REPORT
     ${year}  ${month}  ${day}  Split Date String    ${date}
     ${transactions}    Create List
     ${transaction}    Create Dictionary
-    ...    date=${date}
-    ...    use_case_code=${use_case_code}
+    ...     date=${date}
+    ...     use_case_code=${use_case_code}
      ...    total_amount=100.50
      ...    total_trans=5
      ...    doc_status=A
