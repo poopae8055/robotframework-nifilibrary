@@ -50,7 +50,7 @@ Verify Data Not Found Response Message
     ...        * `${use_case_code}` - The use case code for which data was not found.
     [Arguments]    ${use_case_code}
     ${expected_response_message}    Set Variable   data not found
-    ${expected_response_description}    Set Variable   data from ${date_from} to ${date_fo} use case ${use_case_code} not found
+    ${expected_response_description}    Set Variable   data from ${date_from} to ${date_to} use case ${use_case_code} not found
     ${expected_response_namespace}    Set Variable   etax
     Verify Error Response  ${expected_response_message}  ${expected_response_description}  ${expected_response_namespace}
 
