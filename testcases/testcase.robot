@@ -75,7 +75,7 @@ TC006 - Download zip file - Success
     Then Verify the extract csv file match
     [Teardown]    Run Keywords  Delete Downloaded Files Folder If Exists
 
-TC006 - Download zip file with no data found on SFTP - Fail
+TC007 - Download zip file with no data found on SFTP - Fail
     [Documentation]  To ensure the API handles empty results gracefully.
     [Tags]  SearchEnableSummaryReportAPI  regression  fail
     [Setup]    Login to sftp server
