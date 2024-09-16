@@ -1,6 +1,9 @@
 *** Settings ***
-Resource  ../resources/imports.robot
-Library     DateTime
+Library           DateTime
+Library          OperatingSystem    WITH NAME    OS
+Library          SSHLibrary    WITH NAME    SSH
+Resource      ../resources/imports.robot
+Resource      ./database_keywords.robot
 
 *** Keywords ***
 Set today date
@@ -34,6 +37,7 @@ Set date variable to '${year}' '${month}' '${day}'
     Set Suite Variable    ${year}
     Set Suite Variable    ${month}
     Set Suite Variable    ${day}
+    Set Suite Variable    ${date}  ${year}-${month}-${day}
 
 Set date from to today date with format YYYY-MM-DD
     Set today date
@@ -86,3 +90,38 @@ Set Date To
     ...        * `${day}` - The day (DD).
     [Arguments]    ${year}    ${month}    ${day}
     Set Suite Variable    ${date_to}    ${year}-${month}-${day}
+
+Set Document Description
+    [Documentation]    Sets a variable with a description based on the document status.
+    [Arguments]    ${doc_status}
+    ${description}    Set Variable If    '${doc_status}' == 'A'    Generated transactions (Not include canceled)
+    ...    '${doc_status}' == 'C'    Canceled transactions (Within transaction date)
+    ...    Canceled transactions (Not within transaction date / Others)
+    [Return]    ${description}
+
+Set ETAX ETL Report File Infix
+    [Documentation]    Sets the file infix based on the document status.
+    [Arguments]    ${doc_status}
+    ${file_infix}    Set Variable If    '${doc_status}' == 'A'    GeneratedTransactions
+    ...    '${doc_status}' == 'C'    CanceledTransactions\(withinday\)
+    ...    CanceledTransactions\(others\)
+    [Return]    ${file_infix}
+
+Split Date String
+    [Documentation]  Splits a date string in YYYY-MM-DD format into year, month, and day variables.
+    [Arguments]    ${date_string}
+    ${year}    Set Variable    ${date_string.split('-')[0]}
+    ${month}   Set Variable    ${date_string.split('-')[1]}
+    ${day}    Set Variable    ${date_string.split('-')[2]}
+    [Return]    ${year}  ${month}  ${day}
+
+Set Date From to yesterday - 2
+    Set Date With Subtraction From Current Date  2
+    Set Date From  ${year}  ${month}  ${day}
+
+Set Date From to yesterday - 1
+    Set Date With Subtraction From Current Date  1
+    Set Date To  ${year}  ${month}  ${day}
+
+
+

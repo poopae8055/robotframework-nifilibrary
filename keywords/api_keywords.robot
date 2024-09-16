@@ -1,9 +1,11 @@
 *** Settings ***
 Resource        ./request_keywords.robot
-#Resource        ./response_keywords.robot
 Resource        ./database_keywords.robot
+Resource        ./common_keywords.robot
+Resource        ../resources/imports.robot
 Library            JSONLibrary
 Library           RequestsLibrary
+Library          OperatingSystem
 
 *** Keywords ***
 Generate expected response for get enable summary report use cases api
@@ -59,6 +61,21 @@ Get Summary Report With Pagination
     log  ${actual_response_list_all_pages}
     Set Test Variable    ${actual_response_list_all_pages}
 
+
+Get Summary Report With Expected Error
+    [Documentation]    Sends a GET request to the Summary Report API, expecting an error response.
+    ...    This keyword is designed to handle cases where the API is expected to return an error, such as when no data is found.
+    ...    It sends a request with the specified parameters and ignores any errors that occur during the request.
+    ...    Requires the following arguments:
+    ...        - useCaseCode: The use case code for the report.
+    ...        - pageSize: The number of records per page.
+    [Arguments]    ${useCaseCode}    ${pageSize}
+    Create request header
+    # Create the dictionary with initial values (pageNumber will be updated in the loop)
+    ${query_parameters}    Create Dictionary    dateFrom=${date_from}    dateTo=${date_to}    useCaseCode=${useCaseCode}    pageSize=${pageSize}  pageNumber=1
+    # Send the request and ignore any errors
+    Send GET request with query parameter  etax  ${search_enable_summary_report_path}  ${query_parameters}  ${headers}
+
 Generate Expected Keywords For Search Enable Summary Report API
     [Documentation]    Generates the expected JSON response for the Search Enable Summary Report API.
     ...    * This keyword assumes you have already set the following suite variables:
@@ -70,7 +87,7 @@ Generate Expected Keywords For Search Enable Summary Report API
     ${query_results}    Get Summary Etax ETL Report Transactions From ETAX ETL Report Database By Date Range  ${date_from}    ${date_to}    ${use_case_code}
     log  ${query_results}
     ${query_usecase_results}    Get Use Cases File Prefix From ETAX ETL Report Database  ${use_case_code}
-    ${useCase}    Set Variable  ${query_usecase_results[0]['ZIP_FILE_PREFIX']}
+    ${use_case_name}    Set Variable  ${query_usecase_results[0]['ZIP_FILE_PREFIX']}
     log  ${query_usecase_results}
     ${page_size}    Set Variable    ${page_size}
     ${total_elements}    Get Length    ${query_results}
@@ -91,15 +108,13 @@ Generate Expected Keywords For Search Enable Summary Report API
             ${total_transactions}    Set Variable    0
             ${total_amount}    Evaluate    ${total_amount} + ${trans['TOTAL_AMOUNT']}
             ${total_transactions}    Set Variable    ${trans['TOTAL_TRANS']}
-            ${documentDescription}=    Run Keyword If    '${trans['DOC_STATUS']}' == 'A'    Set Variable    Generated transactions (Not include canceled)
-            ...   ELSE IF    '${trans['DOC_STATUS']}' == 'C'    Set Variable    Canceled transactions (Within transaction date)
-            ...   ELSE    Set Variable    Canceled transactions (Not within transaction date / Others)
+            ${documentDescription}=    Set Document Description  ${trans['DOC_STATUS']}
 
             ${total_amount_formatted}=  Evaluate  "%.2f" % ${total_amount}
 
             ${data_entry}    Create Dictionary
             ...    transDate=${trans_date}
-            ...    useCase=${useCase}
+            ...    useCase=${use_case_name}
             ...    type=${trans['TYPE']}
             ...    documentDescription=${documentDescription}
             ...    totalAmount=${total_amount_formatted}
@@ -122,3 +137,34 @@ Generate Expected Keywords For Search Enable Summary Report API
     END
     log  ${expected_response_list_all_pages}
     Set Test Variable    ${expected_response_list_all_pages}
+
+Download Zip File
+    [Documentation]    Downloads a zip file using the provided parameters and saves it with a dynamically generated filename.
+    [Arguments]    ${trans_date}    ${use_case_code}    ${doc_status}
+
+    ${file_infix}    Set Variable    ${EMPTY}
+    ${file_infix}    Set ETAX ETL Report File Infix  ${doc_status}
+    ${query_usecase_results}    Get Use Cases File Prefix From ETAX ETL Report Database  ${use_case_code}
+    ${use_case_name}    Set Variable  ${query_usecase_results[0]['ZIP_FILE_PREFIX']}
+    log  ${query_usecase_results}
+
+    ${file_name}    Set Variable    TMN_${use_case_name}_${file_infix}_${year}${month}${day}.zip
+    ${file_path}    Set Variable    ${EXECDIR}${/}downloaded_files${/}${file_name}
+
+    Send Download Zip File API  ${trans_date}    ${use_case_code}    ${doc_status}
+    Log    Downloading file: ${file_path}
+    Download file    ${file_path}    ${response.content}
+    Set Test Variable    ${the_downloaded_file}    ${file_path}
+    Set Test Variable    ${use_case_name}
+    Set Test Variable    ${file_infix}
+
+Download Zip File With Expected Error
+    [Documentation]    Downloads a zip file using the provided parameters and saves it with a dynamically generated filename.
+    [Arguments]    ${trans_date}    ${use_case_code}    ${doc_status}
+    Send Download Zip File API  ${trans_date}    ${use_case_code}    ${doc_status}
+
+Send Download Zip File API
+    [Arguments]    ${trans_date}    ${use_case_code}    ${doc_status}
+    Create request header
+    ${query_parameters}    Create Dictionary    transDate=${trans_date}    useCaseCode=${use_case_code}    docStatus=${doc_status}
+    Send GET request with query parameter  etax  ${download_zip_file_path}  ${query_parameters}  ${headers}

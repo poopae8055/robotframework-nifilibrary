@@ -1,7 +1,7 @@
 *** Settings ***
-Resource        ../resources/imports.robot
 Resource        ./data_dictionary.robot
 Library           OracleDBConnector
+Resource        ../resources/imports.robot
 
 *** Keywords ***
 Connect to etax database
@@ -95,19 +95,14 @@ Check If Transaction Exists For Date
     [Return]    ${flag}
 
 Insert Default Transactions For Date
-    [Documentation]    Inserts default transaction data into the ETAX_ETL_REPORT database for a specific date.
+    [Documentation]    Inserts default transaction data into the ETAX_ETL_REPORT database for the date specified in the '${date}' variable.
     ...    *Arguments:*
-    ...        * `${transactions}` - A list of dictionaries, where each dictionary represents a transaction 
-    ...          and contains the following keys:
-    ...            - `date`: The transaction date (YYYY-MM-DD).
-    ...            - `use_case_code`: The use case code.
-    ...            - `total_amount`: The total amount.
-    ...            - `total_trans`: The total number of transactions.
-    ...            - `doc_status`: The document status (A, C, or O).
-    [Arguments]    ${transactions}
+    ...        * `${use_case_code}` - The use case code for the transactions.
+    [Arguments]    ${use_case_code}
+    Create data dictionary to insert transction to ETAX_ETL_REPORT  ${date}  ${use_case_code}
     log  ${transactions}
     FOR    ${transaction}    IN    @{transactions}
-        ${sql}    Set Variable  INSERT INTO ETAX_ETL.ETAX_ETL_REPORT (TRANS_DATE, USE_CASE_CODE, TYPE, TOTAL_AMOUNT, TOTAL_TRANS, DOC_STATUS, CREATED_DATE, CREATED_BY) VALUES (TO_DATE('${transaction.date}', 'YYYY-MM-DD'), '${transaction.use_case_code}', 'VAT', ${transaction.total_amount}, ${transaction.total_trans}, '${transaction.doc_status}', SYSDATE, 'robot_ereport')
+        ${sql}    Set Variable  INSERT INTO ETAX_ETL.ETAX_ETL_REPORT (TRANS_DATE, USE_CASE_CODE, TYPE, TOTAL_AMOUNT, TOTAL_TRANS, DOC_STATUS, ZIP_FILE_PATH, CREATED_DATE, CREATED_BY) VALUES (TO_DATE('${transaction.date}', 'YYYY-MM-DD'), '${transaction.use_case_code}', 'VAT', ${transaction.total_amount}, ${transaction.total_trans}, '${transaction.doc_status}', '${transaction.zip_file_path}',SYSDATE, 'robot_ereport')
         Run SQL action    ${sql}
     END
 
@@ -127,4 +122,30 @@ Insert Transactions For Date Range If Not Exist
         Run Keyword If    ${count_transaction} == False    Create data dictionary to insert transction to ETAX_ETL_REPORT  ${date_string}  ${use_case_code}
         Run Keyword If    ${count_transaction} == False    Insert Default Transactions For Date    ${transactions}
         ${date_from_datetime}    Add Time To Date    ${date_from_datetime}    1 day  result_format=%Y-%m-%d
+    END
+
+Delete Default Transactions For Date
+    [Documentation]    Deletes transactions from ETAX_ETL_REPORT for a specific date and use case.
+    ...    *Arguments:*
+    ...        * `${use_case_code}` - The use case code of transactions to delete.
+    [Arguments]    ${use_case_code}
+    Create data dictionary to insert transction to ETAX_ETL_REPORT  ${date}  ${use_case_code}
+    log  ${transactions}
+    FOR    ${transaction}    IN    @{transactions}
+        ${sql}    Set Variable  DELETE FROM ETAX_ETL.ETAX_ETL_REPORT eer WHERE TRANS_DATE=TO_DATE('${transaction.date}', 'YYYY-MM-DD') AND eer.USE_CASE_CODE = '${use_case_code}'
+        Run SQL action    ${sql}
+    END
+
+Update Default Transactions To Mockup ZIP_FILE_PATH
+    [Documentation]    Updates the ZIP_FILE_PATH column in the ETAX_ETL_REPORT table to a mockup path for testing purposes.
+    ...    This keyword iterates through a list of transactions and updates the corresponding records in the database.
+    ...    *Arguments:*
+    ...        * `${use_case_code}` - The use case code of transactions to update.
+    [Arguments]    ${use_case_code}
+    log  ${transactions}
+    Create data dictionary to insert transction to ETAX_ETL_REPORT  ${date}  ${use_case_code}
+    log  ${transactions}
+    FOR    ${transaction}    IN    @{transactions}
+        ${sql}    Set Variable  UPDATE ETAX_ETL.ETAX_ETL_REPORT SET ZIP_FILE_PATH='${sftp.utiba_etax_report_relative_path}/${date}/test.zip' WHERE TRANS_DATE=TO_DATE('${transaction.date}', 'YYYY-MM-DD') AND USE_CASE_CODE = '${use_case_code}'
+        Run SQL action    ${sql}
     END

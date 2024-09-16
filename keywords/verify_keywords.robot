@@ -1,9 +1,9 @@
 *** Settings ***
-Resource        ../resources/imports.robot
 Library            JSONLibrary
 Library           OracleDBConnector
 Library           RequestsLibrary
-Library          ../pythonlibs/unzip_with_password.py
+Library           ../pythonlibs/unzip_with_password.py
+Resource        ../resources/imports.robot
 
 *** Keywords ***
 The http status should be '${expected_status_code}'
@@ -68,9 +68,25 @@ Verify Error Response
     Should Be Equal    ${body['status']['description']}    ${expected_description}    msg=Error description does not match.
     Should Be Equal    ${body['status']['namespace']}    ${expected_namespace}    msg=Error namespace does not match.
 
-Verify the extract csv file content match
-    ${csv_file_name}  Set Variable  -1.csv
-    ${expected_file_path}  Set Variable  ${expected_csv_folder}/${use_case_name}/${year}-${month}-${day}/${csv_file_name}
-    ${actual_file_path}  Set Variable  ${extract_dir}/${csv_file_name}
-    ${extract_dir}    Set Variable    ${EXECDIR}${/}downloaded_files${/}${file_name}
-    Unzip with password  ${the_downloaded_file}  ${zip_file_password}  ${extract_dir}
+Verify the extract csv file match
+    [Documentation]    need to call Send Download Zip File API  first to get ${use_case_name}, ${file_infix} and ${the_downloaded_file} path
+    ...  and call Set date variable to '${year}' '${month}' '${day}' for ${year}${month}${day}
+    ${csv_file_folder_name}  Set Variable  TMN_${use_case_name}_${file_infix}_${year}${month}${day}
+    ${expected_csv_file_name}  Set Variable  TMN_${use_case_name}_${file_infix}_${year}${month}${day}-1.csv
+    ${extract_dir}    Set Variable    ${EXECDIR}${/}downloaded_files${/}${csv_file_folder_name}
+    log  ${summary_zip_file_password}
+    Unzip with password  ${the_downloaded_file}  ${summary_zip_file_password}  ${extract_dir}
+    ${files}    OS.List Directory    ${extract_dir}
+    List Should Contain Value    ${files}  ${expected_csv_file_name}
+
+Verify ZIP File Not Found On SFTP Response Message
+    [Documentation]    Verifies the API response for a "ZIP file not found on SFTP" error.
+    ...    Checks if the response status code is 404 and the response body
+    ...    contains the expected error message, description, and namespace.
+    ...    *Arguments:*
+    ...        * `${use_case_code}` - The use case code for which the ZIP file was not found.
+    [Arguments]    ${use_case_code}
+    ${expected_message}    Set Variable   data not found
+    ${expected_description}    Set Variable   zip file of date ${year}-${month}-${day} use case ${use_case_code} not found
+    ${expected_namespace}    Set Variable   etax
+    Verify Error Response  ${expected_message}  ${expected_description}  ${expected_namespace}
