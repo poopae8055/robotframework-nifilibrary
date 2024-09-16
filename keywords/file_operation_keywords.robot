@@ -43,6 +43,6 @@ Delete Downloaded Files Folder If Exists
     log  ${folders}
     ${downloaded_files_folder_exists}    Run Keyword And Return Status    List Should Contain Value    ${folders}    downloaded_files
     Run Keyword If    ${downloaded_files_folder_exists}    OS.Remove Directory    ${EXECDIR}${/}downloaded_files    recursive=True
-    Wait Until Keyword Succeeds    5x  5s  Should Not Exist  ${EXECDIR}${/}downloaded_files
+    Wait Until Keyword Succeeds    5x  5s  OS.Should Not Exist  ${EXECDIR}${/}downloaded_files
     ${folders}    OS.List Directory    ${EXECDIR}
     log  ${folders}
