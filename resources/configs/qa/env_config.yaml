@@ -9,5 +9,4 @@ sftp:
   host: sftp.ascendmoney-dev.internal
   username: etax.sftp-internal
   password: qy0G5ZbiaIbt1cIE
-  file_path: /data/s3-sftp/acm-etax-etl/etax.sftp-internal/dev/iam/TrueMoney/Etax/Customer/OUT/
   utiba_etax_report_relative_path: etax.sftp-internal/dev/UtibaETaxReport/

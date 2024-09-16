@@ -1,0 +1,76 @@
+*** Settings ***
+Resource        ../resources/imports.robot
+Library            JSONLibrary
+Library           OracleDBConnector
+Library           RequestsLibrary
+Library          ../pythonlibs/unzip_with_password.py
+
+*** Keywords ***
+The http status should be '${expected_status_code}'
+    [Documentation]    Verifies that the HTTP status code of the response matches the expected status code.
+    ...    *Pre-condition: An HTTP request has been sent and a response object is available.*
+    ...    ${expected_status_code} - The expected HTTP status code (e.g., 200, 400, 500).
+    Should Be Equal As Integers    ${response.status_code}    ${expected_status_code}
+
+Verify the response body matches the expected data
+        [Documentation]    Verifies that the actual JSON response body matches the expected JSON data.
+    ...    *Pre-condition:  An HTTP request has been sent and a response object is available.
+    ...    * The expected JSON data is stored in the `${expected_json}` variable.
+     ...    ${expected_json} - The expected JSON data as a dictionary or list.
+     log  ${response.json()}
+     log  ${expected_json}
+    Should Be Equal    ${response.json()}    ${expected_json}
+
+Verify Response Lists Match
+    [Documentation]    Verifies that two lists of API responses match, taking pagination into account.
+    ...    It iterates through each page of both the expected and actual response lists
+    ...    and uses `Dictionaries Should Be Equal` to compare the corresponding pages.
+    ...    *Pre-condition:*
+    ...        * An HTTP request has been sent and a response object is available.
+    ...        * The expected JSON data for all pages is stored in the `${expected_response_list_all_pages}` variable.
+    ...        * The actual JSON data for all pages is stored in the `${actual_response_list_all_pages}` variable.
+    ...    *Assumption:*
+    ...        * Both lists have the same length (representing the same number of pages).
+    ...        * Each item in the lists is a dictionary representing a single page response.
+    ${list_length}    Get Length    ${expected_response_list_all_pages}
+    Should Be Equal    ${list_length}    ${actual_response_list_all_pages.__len__()}    msg=The number of pages in the expected and actual responses do not match.
+    FOR    ${index}    IN RANGE    ${list_length}
+        ${expected_response}    Set Variable    ${expected_response_list_all_pages}[${index}]
+        ${actual_response}    Set Variable    ${actual_response_list_all_pages}[${index}]
+        log  ${actual_response}
+        log  ${expected_response}
+        Dictionaries Should Be Equal    ${expected_response}    ${actual_response}    msg=Response data for page ${index + 1} does not match.
+    END
+
+Verify Data Not Found Response Message
+    [Documentation]    Verifies the API response for a "data not found" error.
+    ...    Checks if the response status code is 404 and the response body
+    ...    contains the expected error message, description, and namespace.
+    ...    *Arguments:*
+    ...        * `${use_case_code}` - The use case code for which data was not found.
+    [Arguments]    ${use_case_code}
+    ${expected_response_message}    Set Variable   data not found
+    ${expected_response_description}    Set Variable   data of date ${date_from} use case ${use_case_code} not found
+    ${expected_response_namespace}    Set Variable   etax
+    Verify Error Response  ${expected_response_message}  ${expected_response_description}  ${expected_response_namespace}
+
+Verify Error Response
+    [Documentation]    Verifies the API error response against expected values.
+    ...    Checks if the response body contains the expected error message,
+    ...    description, and namespace.
+    ...    *Arguments:*
+    ...        * `${expected_message}` - The expected error message.
+    ...        * `${expected_description}` - The expected error description.
+    ...        * `${expected_namespace}` - The expected error namespace.
+    [Arguments]    ${expected_message}  ${expected_description}  ${expected_namespace}
+    ${body}=    Set Variable    ${response.json()}
+    Should Be Equal    ${body['status']['message']}    ${expected_message}    msg=Error message does not match.
+    Should Be Equal    ${body['status']['description']}    ${expected_description}    msg=Error description does not match.
+    Should Be Equal    ${body['status']['namespace']}    ${expected_namespace}    msg=Error namespace does not match.
+
+Verify the extract csv file content match
+    ${csv_file_name}  Set Variable  -1.csv
+    ${expected_file_path}  Set Variable  ${expected_csv_folder}/${use_case_name}/${year}-${month}-${day}/${csv_file_name}
+    ${actual_file_path}  Set Variable  ${extract_dir}/${csv_file_name}
+    ${extract_dir}    Set Variable    ${EXECDIR}${/}downloaded_files${/}${file_name}
+    Unzip with password  ${the_downloaded_file}  ${zip_file_password}  ${extract_dir}
