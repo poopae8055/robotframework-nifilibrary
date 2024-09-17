@@ -22,7 +22,7 @@ Verify the response body matches the expected data
     Should Be Equal    ${response.json()}    ${expected_json}
 
 Verify Response Lists Match
-    [Documentation]    Verifies that two lists of API responses match, taking pagination into account.
+    [Documentation]    Verifies that the actual API response list matches the expected response list, taking pagination into account.
     ...    It iterates through each page of both the expected and actual response lists
     ...    and uses `Dictionaries Should Be Equal` to compare the corresponding pages.
     ...    *Pre-condition:*
@@ -68,7 +68,7 @@ Verify Error Response
     Should Be Equal    ${body['status']['description']}    ${expected_description}    msg=Error description does not match.
     Should Be Equal    ${body['status']['namespace']}    ${expected_namespace}    msg=Error namespace does not match.
 
-Extract and Verify CSV File Match
+Extract and Verify CSV File Name Match
     [Documentation]    need to call Send Download Zip File API  first to get ${use_case_name}, ${file_infix} and ${the_downloaded_file} path
     ...  and call Set date variable to '${year}' '${month}' '${day}' for ${year}${month}${day}
     ${csv_file_folder_name}  Set Variable  TMN_${use_case_name}_${file_infix}_${year}${month}${day}
@@ -90,3 +90,11 @@ Verify ZIP File Not Found On SFTP Response Message
     ${expected_description}    Set Variable   zip file of date ${year}-${month}-${day} use case ${use_case_code} not found
     ${expected_namespace}    Set Variable   etax
     Verify Error Response  ${expected_message}  ${expected_description}  ${expected_namespace}
+
+#Response header should be Content-Type: '${expected_content_type}' charset='${expected_charset}'
+#    [Documentation]    Verifies that the response header 'Content-Type' matches the expected content type and character set.
+#    ${response_header}  Set Variable    ${response.headers}
+#    ${actual_content_type}  Set Variable  ${response_header['Content-Type']}
+#    ${actual_charset}  Set Variable  ${response_header['Content-Type']}
+#    Should Be Equal    ${actual_content_type}    ${expected_content_type}
+#    Should Be Equal    ${actual_charset}    ${expected_charset}

@@ -72,7 +72,7 @@ TC006 - Download zip file - Success
     And Set date variable to '2024' '09' '13'
     And Upload File If Not Exists  CO  C
     When Download Zip File  2024-09-13  CO  C
-    Then Extract and Verify CSV File Match
+    Then Extract and Verify CSV File Name Match
     [Teardown]    Run Keywords  Delete Downloaded Files Folder If Exists
 
 TC007 - Download zip file with no data found on SFTP - Fail
@@ -84,6 +84,16 @@ TC007 - Download zip file with no data found on SFTP - Fail
     When Download Zip File With Expected Error  2024-09-12  CO  A
     Then The http status should be '404'
     And Verify ZIP File Not Found On SFTP Response Message  CO
+
+#TC008 - Download CSV file - Success
+#    [Documentation]  To ensure the API successfully downloads a CSV file for the specified parameters.
+#    [Tags]  ExportSearchSummaryReportAsCSVAPI  regression  success
+#    Given Set Date From  2024  02  29
+#    And Set Date To  2024  02  31
+#    When Send request to export summary report as csv file with  CO
+#    Then The http status should be '200'
+#    And Response header should be Content-Type: 'text/csv' charset='utf-8'
+#    And Verify the extract csv content file match
 
 *** Keywords ***
 Prepare the transaction with Mockup ZIP_FILE_PATH
