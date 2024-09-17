@@ -68,7 +68,7 @@ Verify Error Response
     Should Be Equal    ${body['status']['description']}    ${expected_description}    msg=Error description does not match.
     Should Be Equal    ${body['status']['namespace']}    ${expected_namespace}    msg=Error namespace does not match.
 
-Verify the extract csv file match
+Extract and Verify CSV File Match
     [Documentation]    need to call Send Download Zip File API  first to get ${use_case_name}, ${file_infix} and ${the_downloaded_file} path
     ...  and call Set date variable to '${year}' '${month}' '${day}' for ${year}${month}${day}
     ${csv_file_folder_name}  Set Variable  TMN_${use_case_name}_${file_infix}_${year}${month}${day}

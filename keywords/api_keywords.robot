@@ -8,7 +8,7 @@ Library           RequestsLibrary
 Library          OperatingSystem
 
 *** Keywords ***
-Generate expected response for get enable summary report use cases api
+Generate expected response data for get enable summary report use cases api
     [Documentation]     retrieves active use cases from a database, constructs an expected JSON response containing those use cases,
     ...  and prepares to test an API related to "etax transactions".
     ${query_results}    Get Enabled Summary Use Cases From ETAX ETL Report Database
@@ -40,7 +40,7 @@ Get Summary Report With Pagination
     # Create the dictionary with initial values (pageNumber will be updated in the loop)
     ${query_parameters_with_the_first_page}    Create Dictionary    dateFrom=${date_from}    dateTo=${date_to}    useCaseCode=${useCaseCode}    pageSize=${pageSize}  pageNumber=1
 
-    # Initial request to get total pages (you can keep this part)
+    # Initial request to get total pages
     Send GET request with query parameter  etax  ${search_enable_summary_report_path}  ${query_parameters_with_the_first_page}  ${headers}
     ${total_pages}    Set Variable    ${response.json()['pageMetadata']['totalPages']}
     Log    Total Pages: ${total_pages}
@@ -76,11 +76,10 @@ Get Summary Report With Expected Error
     # Send the request and ignore any errors
     Send GET request with query parameter  etax  ${search_enable_summary_report_path}  ${query_parameters}  ${headers}
 
-Generate Expected Keywords For Search Enable Summary Report API
+Generate Expected Response Data For Search Enable Summary Report API
     [Documentation]    Generates the expected JSON response for the Search Enable Summary Report API.
+    ...    The expected data is retrieved from the database based on the provided parameters.
     ...    * This keyword assumes you have already set the following suite variables:
-    ...        * `${date_from}` - The start date of the report range (format: YYYY-MM-DD).
-    ...        * `${date_to}` - The end date of the report range (format: YYYY-MM-DD).
     ...        * `${use_case_code}` - The use case code for the report.
     ...        * `${include_doc_status}` - Boolean flag to include or exclude 'docStatus' in the expected response.
     [Arguments]    ${use_case_code}  ${page_size}  ${include_doc_status}

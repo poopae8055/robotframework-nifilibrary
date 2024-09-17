@@ -16,7 +16,7 @@ Suite Teardown    Disconnect
 TC001 - Get Enabled Use Cases - Success
     [Documentation]    To verify API returns 200 and correct response body structure when call Get Enable Summary Report Use Cases API.
     [Tags]  GET_EnableSummaryReportUseCasesAPI  regression  success
-    Given Generate expected response for get enable summary report use cases api
+    Given Generate expected response data for get enable summary report use cases api
     When Send request to get enable summary report use cases api
     Then The http status should be '200'
     And Verify the response body matches the expected data
@@ -28,7 +28,7 @@ TC002 - Basic summary report - Success
     Given Insert transaction in ETAX_ETL_REPORT database when there is no any transaction in '${year}' '${month}' '${day}' for 'CO'
     And Set date from to yesterday date with format YYYY-MM-DD
     And Set date to to yesterday date with format YYYY-MM-DD
-    And Generate Expected Keywords For Search Enable Summary Report API  CO  20  ${TRUE}
+    And Generate Expected Response Data For Search Enable Summary Report API  CO  20  ${TRUE}
     When Get Summary Report With Pagination  CO  20
     Then The http status should be '200'
     And Verify Response Lists Match
@@ -39,7 +39,7 @@ TC003 - Pagination for summary report - Success
     Given Set Date From to yesterday - 2
     And Set Date From to yesterday - 1
     And Insert Transactions For Date Range If Not Exist  ${date_from}    ${date_to}    CO
-    And Generate Expected Keywords For Search Enable Summary Report API  CO  3  ${TRUE}
+    And Generate Expected Response Data For Search Enable Summary Report API  CO  3  ${TRUE}
     When Get Summary Report With Pagination  CO  3
     Then The http status should be '200'
     And Verify Response Lists Match
@@ -50,7 +50,7 @@ TC004 - Summary Report with data more than three month - Success
     Given Set Date From  2024  01  01
     And Set Date To  2024  01  02
     And Insert Transactions For Date Range If Not Exist  ${date_from}    ${date_to}    CO
-    And Generate Expected Keywords For Search Enable Summary Report API  CO  20  ${FALSE}
+    And Generate Expected Response Data For Search Enable Summary Report API  CO  20  ${FALSE}
     When Get Summary Report With Pagination  CO  20
     Then The http status should be '200'
     And Verify Response Lists Match
@@ -72,7 +72,7 @@ TC006 - Download zip file - Success
     And Set date variable to '2024' '09' '13'
     And Upload File If Not Exists  CO  C
     When Download Zip File  2024-09-13  CO  C
-    Then Verify the extract csv file match
+    Then Extract and Verify CSV File Match
     [Teardown]    Run Keywords  Delete Downloaded Files Folder If Exists
 
 TC007 - Download zip file with no data found on SFTP - Fail
