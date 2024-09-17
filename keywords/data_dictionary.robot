@@ -18,8 +18,8 @@ Create data dictionary to insert transction to ETAX_ETL_REPORT
     ${transaction}    Create Dictionary
      ...    date=${date}
      ...    use_case_code=${use_case_code}
-     ...    total_amount=200.00
-     ...    total_trans=2
+     ...    total_amount=2010.99
+     ...    total_trans=2000
      ...    doc_status=C
      ...    zip_file_path=${sftp.utiba_etax_report_relative_path}/${date}/TMN_CashOutCIMB_CanceledTransactions(withinday)_${year}${month}${day}.zip
     Append To List    ${transactions}    ${transaction}
