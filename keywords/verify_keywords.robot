@@ -91,10 +91,39 @@ Verify ZIP File Not Found On SFTP Response Message
     ${expected_namespace}    Set Variable   etax
     Verify Error Response  ${expected_message}  ${expected_description}  ${expected_namespace}
 
-#Response header should be Content-Type: '${expected_content_type}' charset='${expected_charset}'
-#    [Documentation]    Verifies that the response header 'Content-Type' matches the expected content type and character set.
-#    ${response_header}  Set Variable    ${response.headers}
-#    ${actual_content_type}  Set Variable  ${response_header['Content-Type']}
-#    ${actual_charset}  Set Variable  ${response_header['Content-Type']}
-#    Should Be Equal    ${actual_content_type}    ${expected_content_type}
-#    Should Be Equal    ${actual_charset}    ${expected_charset}
+Response header should be shown correctly
+    [Documentation]    Verifies that the response header 'Content-Type' matches the expected content type and character set.
+    [Arguments]    ${expected_content_type}  ${expected_charset}=${NONE}
+    ${response_header}  Set Variable    ${response.headers}
+    ${actual_content_type}  Set Variable  ${response_header['Content-Type']}
+    ${actual_charset}  Set Variable  ${response_header['Content-Type']}
+    Should Be Equal    ${actual_content_type}    ${expected_content_type}
+    Should Be Equal    ${actual_charset}    ${expected_charset}
+
+Verify the export csv content file match
+    [Documentation]    Verifies that the content of the exported CSV file matches the expected content from a resource file.
+    ...    This keyword assumes that the CSV file has been exported and the file path is available in the variable `${the_exported_download_file}`.
+    ${the_exported_download_file}    OS.Get File    ${the_exported_download_file}
+    ${expected_csv_content}    OS.Get File    ${CURDIR}/../resources/testdata/file/export.csv
+    Validate downloaded file matches the expected file content   ${the_exported_download_file}     ${expected_csv_content}
+
+Validate downloaded file matches the expected file content
+    [Documentation]    This keyword will validate the downloaded file content with the expected file content.
+    ...  It should be exactly the same.
+   [Arguments]  ${expected_content_file}  ${actual_content_file}
+   ${expected_list}=    Split String    ${expected_content_file}   \n
+   ${actual_list}=    Split String    ${actual_content_file}   \n
+   ${expected_list_length}  Get Length    ${expected_list}
+   ${actual_list_length}  Get Length    ${actual_list}
+    FOR    ${i}    IN RANGE    0    ${expected_list_length}
+        ${expected_data}=  Set Variable  ${expected_list[${i}]}
+        ${actual_data}=  Set Variable  ${actual_list[${i}]}
+        log  ${expected_data}
+        log  ${actual_data}
+        ${actual_length}  Get Length    ${actual_data}
+        ${expected_length}  Get Length    ${expected_data}
+        log  ${actual_length}
+        log  ${expected_length}
+        Should Be Equal As Integers  ${expected_length}  ${actual_length}
+        Should Match  ${expected_data}  ${actual_data}
+    END

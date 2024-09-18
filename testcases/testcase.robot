@@ -85,15 +85,24 @@ TC007 - Download zip file with no data found on SFTP - Fail
     Then The http status should be '404'
     And Verify ZIP File Not Found On SFTP Response Message  CO
 
-#TC008 - Download CSV file - Success
-#    [Documentation]  To ensure the API successfully downloads a CSV file for the specified parameters.
-#    [Tags]  ExportSearchSummaryReportAsCSVAPI  regression  success
-#    Given Set Date From  2024  02  29
-#    And Set Date To  2024  02  31
-#    When Send request to export summary report as csv file with  CO
-#    Then The http status should be '200'
-#    And Response header should be Content-Type: 'text/csv' charset='utf-8'
-#    And Verify the extract csv content file match
+TC008 - Download CSV file - Success
+    [Documentation]  To ensure the API successfully downloads a CSV file for the specified parameters.
+    [Tags]  ExportSearchSummaryReportAsCSVAPI  regression  success
+    Given Set Date From  2024  02  29
+    And Set Date To  2024  02  31
+    When Send request to export summary report as csv file with  CO
+    Then The http status should be '200'
+    And  Response header should be shown correctly  text/csv  utf-8
+    And Verify the export csv content file match
+
+TC009 - Download CSV file with no data found - Fail
+    [Documentation]    To ensure the API handles data not found gracefully.
+    [Tags]  ExportSearchSummaryReportAsCSVAPI  regression  fail
+    Given Set Date From  2023  02  29
+    And Set Date To  2023  02  31
+    When Send request to export summary report as csv file With Expected Error  CO
+    Then The http status should be '404'
+    And Verify Data Not Found Response Message  CO
 
 *** Keywords ***
 Prepare the transaction with Mockup ZIP_FILE_PATH

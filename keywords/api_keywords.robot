@@ -167,3 +167,38 @@ Send Download Zip File API
     Create request header
     ${query_parameters}    Create Dictionary    transDate=${trans_date}    useCaseCode=${use_case_code}    docStatus=${doc_status}
     Send GET request with query parameter  etax  ${download_zip_file_path}  ${query_parameters}  ${headers}
+
+Send request to export summary report as csv file with
+    [Arguments]    ${use_case_code}
+    [Documentation]    Sends a request to export the summary report as a CSV file.
+    ...    * Requires the following arguments:
+    ...        - useCaseCode: The use case code for the report.
+    ...    * Before using this keyword, you must set the following date variables:
+    ...        - date_from: The start date for the report.
+    ...        - date_to: The end date for the report.
+    ...    * These date variables can be set using keywords like 'Set Date From' and 'Set Date To'.
+    Create request header
+    ${query_parameters}    Create Dictionary    dateFrom=${date_from}    dateTo=${date_to}    useCaseCode=${use_case_code}
+    Send GET request with query parameter  etax  ${export_search_summary_report_as_csv_path}  ${query_parameters}  ${headers}
+    ${file_name}    Set Variable  actual_export_file.csv
+    ${file_path}    Set Variable    ${EXECDIR}${/}downloaded_files${/}${file_name}
+    Log    Exported download file path: ${file_path}
+    Download file    ${file_path}    ${response.content}
+    Wait Until Keyword Succeeds    5x  5s  OS.File Should Exist    ${file_path}
+    Set Test Variable    ${the_exported_download_file}    ${file_path}
+
+Send request to export summary report as csv file With Expected Error
+    [Arguments]    ${use_case_code}
+    [Documentation]    Sends a request to export the summary report as a CSV file, expecting an error response.
+    ...    This keyword is designed to handle cases where the API is expected to return an error,
+    ...    such as when no data is found for the specified date range and use case code.
+    ...    It sends a request with the specified parameters and ignores any errors that occur during the request.
+    ...    * Requires the following arguments:
+    ...        - useCaseCode: The use case code for the report.
+    ...    * Before using this keyword, you must set the following date variables:
+    ...        - date_from: The start date for the report.
+    ...        - date_to: The end date for the report.
+    ...    * These date variables can be set using keywords like 'Set Date From' and 'Set Date To'.
+    Create request header
+    ${query_parameters}    Create Dictionary    dateFrom=${date_from}    dateTo=${date_to}    useCaseCode=${use_case_code}
+    Send GET request with query parameter  etax  ${export_search_summary_report_as_csv_path}  ${query_parameters}  ${headers}
