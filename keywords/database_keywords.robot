@@ -100,7 +100,6 @@ Insert Default Transactions For Date
     ...        * `${use_case_code}` - The use case code for the transactions.
     [Arguments]    ${use_case_code}
     FOR    ${transaction}    IN    @{transactions}
-        log   INSERT INTO ETAX_ETL.ETAX_ETL_REPORT (TRANS_DATE, USE_CASE_CODE, TYPE, TOTAL_AMOUNT, TOTAL_TRANS, DOC_STATUS, ZIP_FILE_PATH, CREATED_DATE, CREATED_BY) VALUES (TO_DATE('${transaction.date}', 'YYYY-MM-DD'), '${transaction.use_case_code}', 'VAT', ${transaction.total_amount}, ${transaction.total_trans}, '${transaction.doc_status}', '${transaction.zip_file_path}',SYSDATE, 'robot_ereport')
         ${sql}    Set Variable  INSERT INTO ETAX_ETL.ETAX_ETL_REPORT (TRANS_DATE, USE_CASE_CODE, TYPE, TOTAL_AMOUNT, TOTAL_TRANS, DOC_STATUS, ZIP_FILE_PATH, CREATED_DATE, CREATED_BY) VALUES (TO_DATE('${transaction.date}', 'YYYY-MM-DD'), '${transaction.use_case_code}', 'VAT', ${transaction.total_amount}, ${transaction.total_trans}, '${transaction.doc_status}', '${transaction.zip_file_path}',SYSDATE, 'robot_ereport')
         Run SQL action    ${sql}
     END
