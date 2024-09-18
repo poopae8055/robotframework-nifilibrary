@@ -21,7 +21,7 @@ TC001 - Get Enabled Use Cases - Success
     Then The http status should be '200'
     And Verify the response body matches the expected data
 
-TC002 - Basic summary report - Success
+TC002 - Basic Summary Report - Success
     [Documentation]    To ensure  the API returns a correct summary for the specified query parameters.
     [Tags]  SearchEnableSummaryReportAPI  regression  success
     [Setup]    Set Date With Subtraction From Current Date  1
@@ -33,7 +33,7 @@ TC002 - Basic summary report - Success
     Then The http status should be '200'
     And Verify Response Lists Match
 
-TC003 - Pagination for summary report - Success
+TC003 - Pagination For Summary Report - Success
     [Documentation]    To ensure the API correctly paginates the results.
     [Tags]  SearchEnableSummaryReportAPI   regression  success
     Given Set Date From to yesterday - 2
@@ -44,7 +44,7 @@ TC003 - Pagination for summary report - Success
     Then The http status should be '200'
     And Verify Response Lists Match
 
-TC004 - Summary Report with data more than three month - Success
+TC004 - Summary Report with Data More Than Three Month - Success
     [Documentation]  To verify Summary Report API accuracy with data spanning more than three months.
     [Tags]  SearchEnableSummaryReportAPI  regression  success
     Given Set Date From  2024  01  01
@@ -55,7 +55,7 @@ TC004 - Summary Report with data more than three month - Success
     Then The http status should be '200'
     And Verify Response Lists Match
 
-TC005 - Summary Report with no result data - Fail
+TC005 - Summary Report with Data Not Found - Fail
     [Documentation]  To ensure the API handles empty results gracefully.
     [Tags]  SearchEnableSummaryReportAPI  regression  fail
     Given Set Date From  2023  01  01
@@ -64,18 +64,18 @@ TC005 - Summary Report with no result data - Fail
     Then The http status should be '404'
     And Verify Data Not Found Response Message  CO
 
-TC006 - Download zip file - Success
+TC006 - Download Zip File - Success
     [Documentation]  To ensure the API successfully downloads a zip file for the specified parameters.
     [Tags]  SearchEnableSummaryReportAPI  regression  success
-    [Setup]    Login to sftp server
-    Given Delete Downloaded Files Folder If Exists
-    And Set date variable to '2024' '09' '13'
+    [Setup]    Run Keywords    Login to sftp server
+    ...  Delete Downloaded Files Folder If Exists
+    Given Set date variable to '2024' '09' '13'
     And Upload File If Not Exists  CO  C
     When Download Zip File  2024-09-13  CO  C
     Then Extract and Verify CSV File Name Match
     [Teardown]    Run Keywords  Delete Downloaded Files Folder If Exists
 
-TC007 - Download zip file with no data found on SFTP - Fail
+TC007 - Download Zip File with Data Not Found on SFTP - Fail
     [Documentation]  To ensure the API handles empty results gracefully.
     [Tags]  SearchEnableSummaryReportAPI  regression  fail
     [Setup]    Login to sftp server
@@ -85,17 +85,19 @@ TC007 - Download zip file with no data found on SFTP - Fail
     Then The http status should be '404'
     And Verify ZIP File Not Found On SFTP Response Message  CO
 
-TC008 - Download CSV file - Success
+TC008 - Export Summary Report as CSV File - Success
     [Documentation]  To ensure the API successfully downloads a CSV file for the specified parameters.
     [Tags]  ExportSearchSummaryReportAsCSVAPI  regression  success
+    [Setup]    Delete Downloaded Files Folder If Exists
     Given Set Date From  2024  02  29
     And Set Date To  2024  02  31
     When Send request to export summary report as csv file with  CO
     Then The http status should be '200'
     And  Response header should be shown correctly  text/csv  utf-8
     And Verify the export csv content file match
+    [Teardown]    Run Keywords  Delete Downloaded Files Folder If Exists
 
-TC009 - Download CSV file with no data found - Fail
+TC009 - Export Summary Report as CSV File with Data Not Found - Fail
     [Documentation]    To ensure the API handles data not found gracefully.
     [Tags]  ExportSearchSummaryReportAsCSVAPI  regression  fail
     Given Set Date From  2023  02  29
