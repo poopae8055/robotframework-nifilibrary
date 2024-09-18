@@ -13,7 +13,7 @@ Suite Setup    Connect to etax database
 Suite Teardown    Disconnect
 
 *** Test Cases ***
-TC001 - Get Enabled Use Cases - Success
+TC_ETAXRP_00001 - Get Enabled Use Cases - Success
     [Documentation]    To verify API returns 200 and correct response body structure when call Get Enable Summary Report Use Cases API.
     [Tags]  GET_EnableSummaryReportUseCasesAPI  regression  success
     Given Generate expected response data for get enable summary report use cases api
@@ -21,7 +21,7 @@ TC001 - Get Enabled Use Cases - Success
     Then The http status should be '200'
     And Verify the response body matches the expected data
 
-TC002 - Basic Summary Report - Success
+TC_ETAXRP_00002 - Basic Summary Report - Success
     [Documentation]    To ensure  the API returns a correct summary for the specified query parameters.
     [Tags]  SearchEnableSummaryReportAPI  regression  success
     [Setup]    Set Date With Subtraction From Current Date  1
@@ -33,7 +33,7 @@ TC002 - Basic Summary Report - Success
     Then The http status should be '200'
     And Verify Response Lists Match
 
-TC003 - Pagination For Summary Report - Success
+TC_ETAXRP_00003 - Pagination For Summary Report - Success
     [Documentation]    To ensure the API correctly paginates the results.
     [Tags]  SearchEnableSummaryReportAPI   regression  success
     Given Set Date From to yesterday - 2
@@ -44,7 +44,7 @@ TC003 - Pagination For Summary Report - Success
     Then The http status should be '200'
     And Verify Response Lists Match
 
-TC004 - Summary Report with Data More Than Three Month - Success
+TC_ETAXRP_00004 - Summary Report with Data More Than Three Month - Success
     [Documentation]  To verify Summary Report API accuracy with data spanning more than three months.
     [Tags]  SearchEnableSummaryReportAPI  regression  success
     Given Set Date From  2024  01  01
@@ -55,7 +55,7 @@ TC004 - Summary Report with Data More Than Three Month - Success
     Then The http status should be '200'
     And Verify Response Lists Match
 
-TC005 - Summary Report with Data Not Found - Fail
+TC_ETAXRP_00005 - Summary Report with Data Not Found - Fail
     [Documentation]  To ensure the API handles empty results gracefully.
     [Tags]  SearchEnableSummaryReportAPI  regression  fail
     Given Set Date From  2023  01  01
@@ -64,7 +64,7 @@ TC005 - Summary Report with Data Not Found - Fail
     Then The http status should be '404'
     And Verify Data Not Found Response Message  CO
 
-TC006 - Download Zip File - Success
+TC_ETAXRP_00006 - Download Zip File - Success
     [Documentation]  To ensure the API successfully downloads a zip file for the specified parameters.
     [Tags]  SearchEnableSummaryReportAPI  regression  success
     [Setup]    Run Keywords    Login to sftp server
@@ -75,7 +75,7 @@ TC006 - Download Zip File - Success
     Then Extract and Verify CSV File Name Match
     [Teardown]    Run Keywords  Delete Downloaded Files Folder If Exists
 
-TC007 - Download Zip File with Data Not Found on SFTP - Fail
+TC_ETAXRP_00007 - Download Zip File with Data Not Found on SFTP - Fail
     [Documentation]  To ensure the API handles empty results gracefully.
     [Tags]  SearchEnableSummaryReportAPI  regression  fail
     [Setup]    Login to sftp server
@@ -85,7 +85,7 @@ TC007 - Download Zip File with Data Not Found on SFTP - Fail
     Then The http status should be '404'
     And Verify ZIP File Not Found On SFTP Response Message  CO
 
-TC008 - Export Summary Report as CSV File - Success
+TC_ETAXRP_00008 - Export Summary Report as CSV File - Success
     [Documentation]  To ensure the API successfully downloads a CSV file for the specified parameters.
     [Tags]  ExportSearchSummaryReportAsCSVAPI  regression  success
     [Setup]    Delete Downloaded Files Folder If Exists
@@ -97,7 +97,7 @@ TC008 - Export Summary Report as CSV File - Success
     And Verify the export csv content file match
     [Teardown]    Run Keywords  Delete Downloaded Files Folder If Exists
 
-TC009 - Export Summary Report as CSV File with Data Not Found - Fail
+TC_ETAXRP_00009 - Export Summary Report as CSV File with Data Not Found - Fail
     [Documentation]    To ensure the API handles data not found gracefully.
     [Tags]  ExportSearchSummaryReportAsCSVAPI  regression  fail
     Given Set Date From  2023  02  29
