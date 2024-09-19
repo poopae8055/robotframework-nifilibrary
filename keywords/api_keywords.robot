@@ -177,7 +177,7 @@ Send request to export summary report as csv file with
     ...        - date_from: The start date for the report.
     ...        - date_to: The end date for the report.
     ...    * These date variables can be set using keywords like 'Set Date From' and 'Set Date To'.
-   Send request to export summary report  ${use_case_code}
+    Send request to export summary report api  ${use_case_code}
     ${file_name}    Set Variable  actual_export_file.csv
     ${file_path}    Set Variable    ${EXECDIR}${/}downloaded_files${/}${file_name}
     Log    Exported download file path: ${file_path}
