@@ -93,7 +93,7 @@ Verify ZIP File Not Found On SFTP Response Message
 
 Response header should be shown correctly
     [Documentation]    Verifies that the response header 'Content-Type' matches the expected content type.
-    [Arguments]    ${expected_content_type}  ${expected_charset}=${NONE}
+    [Arguments]    ${expected_content_type}
     ${response_header}  Set Variable    ${response.headers}
     ${actual_content_type}  Set Variable  ${response_header['Content-Type']}
     Should Be Equal    ${actual_content_type}    ${expected_content_type}
