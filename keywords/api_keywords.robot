@@ -177,9 +177,7 @@ Send request to export summary report as csv file with
     ...        - date_from: The start date for the report.
     ...        - date_to: The end date for the report.
     ...    * These date variables can be set using keywords like 'Set Date From' and 'Set Date To'.
-    Create request header
-    ${query_parameters}    Create Dictionary    dateFrom=${date_from}    dateTo=${date_to}    useCaseCode=${use_case_code}
-    Send GET request with query parameter  etax  ${export_search_summary_report_as_csv_path}  ${query_parameters}  ${headers}
+   Send request to export summary report  ${use_case_code}
     ${file_name}    Set Variable  actual_export_file.csv
     ${file_path}    Set Variable    ${EXECDIR}${/}downloaded_files${/}${file_name}
     Log    Exported download file path: ${file_path}
@@ -187,7 +185,7 @@ Send request to export summary report as csv file with
     Wait Until Keyword Succeeds    5x  5s  OS.File Should Exist    ${file_path}
     Set Test Variable    ${the_exported_download_file}    ${file_path}
 
-Send request to export summary report as csv file With Expected Error
+Send request to export summary report api
     [Arguments]    ${use_case_code}
     [Documentation]    Sends a request to export the summary report as a CSV file, expecting an error response.
     ...    This keyword is designed to handle cases where the API is expected to return an error,
