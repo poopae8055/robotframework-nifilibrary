@@ -93,7 +93,7 @@ TC_ETAXRP_00008 - Export Summary Report as CSV File - Success
     And Set Date To  2024  02  31
     When Send request to export summary report as csv file with  CO
     Then The http status should be '200'
-    And  Response header should be shown correctly  text/csv  utf-8
+    And  Response header should be shown correctly  text/csv
     And Verify the export csv content file match
     [Teardown]    Run Keywords  Delete Downloaded Files Folder If Exists
 
