@@ -14,7 +14,7 @@ Query etax transaction
     [Arguments]    ${sql}
     ${query_results}    Query all    ${etax_database_conn}    ${sql}
     Log  \nQuery result\n${query_results}
-    [Return]    ${query_results}
+    RETURN    ${query_results}
 
 Run SQL action
     [Documentation]    Executes a given SQL query against the connected database.
@@ -41,7 +41,7 @@ Get summary etax etl report Transactions From ETAX ETL Report Database By Date R
     [Arguments]    ${date_from}    ${date_to}    ${use_case_code}
     ${sql}    Set Variable    SELECT * FROM ETAX_ETL.ETAX_ETL_REPORT eer WHERE eer.TRANS_DATE BETWEEN TO_DATE('${date_from} 00:00:00','YYYY-MM-DD HH24:MI:SS') AND TO_DATE('${date_to} 00:00:00','YYYY-MM-DD HH24:MI:SS') AND eer.USE_CASE_CODE = '${use_case_code}' ORDER BY TRANS_DATE ASC, DOC_STATUS ASC
     ${query_results}    Query etax transaction    ${sql}
-    [Return]    ${query_results}
+    RETURN    ${query_results}
 
 Get Use Case Transactions From ETAX ETL Report Database By Date Range
     [Documentation]    Retrieves transactions for a specific use case from the ETAX_ETL_REPORT database based on the provided date range.
@@ -52,7 +52,7 @@ Get Use Case Transactions From ETAX ETL Report Database By Date Range
     [Arguments]    ${date_from}    ${date_to}    ${use_case_code}
     ${sql}    Set Variable    SELECT * FROM ETAX_ETL.ETAX_ETL_REPORT eer WHERE eer.TRANS_DATE BETWEEN TO_DATE('${date_from} 00:00:00','YYYY-MM-DD HH24:MI:SS') AND TO_DATE('${date_to} 00:00:00','YYYY-MM-DD HH24:MI:SS') AND eer.USE_CASE_CODE='${use_case_code}'
     ${query_results}    Query etax transaction    ${sql}
-    [Return]    ${query_results}
+    RETURN    ${query_results}
 
 Get Enabled Summary Use Cases From ETAX ETL Report Database
     [Documentation]    Retrieves a list of enabled summary use cases from the MS_USE_CASES table in the ETAX ETL Report Database.
@@ -60,13 +60,13 @@ Get Enabled Summary Use Cases From ETAX ETL Report Database
     ...    *Returns:* A list of tuples, where each tuple represents a use case with its code and zip file prefix.
     ${query}    Set Variable    SELECT DISTINCT USE_CASE_CODE, ZIP_FILE_PREFIX FROM MS_USE_CASES WHERE ENABLE_SUM_TO_REPORT = 'Y' ORDER BY USE_CASE_CODE ASC
     ${query_results}    Query etax transaction    ${query}
-    [Return]    ${query_results}
+    RETURN    ${query_results}
 
 Get Use Cases File Prefix From ETAX ETL Report Database
     [Arguments]    ${use_case_code}
     ${query}    Set Variable    SELECT DISTINCT ZIP_FILE_PREFIX FROM MS_USE_CASES WHERE USE_CASE_CODE='${use_case_code}'
     ${query_results}    Query etax transaction    ${query}
-    [Return]    ${query_results}
+    RETURN    ${query_results}
 
 Insert transaction in ETAX_ETL_REPORT database when there is no any transaction in '${year}' '${month}' '${day}' for '${use_case_code}'
     [Documentation]    Inserts default transaction data into the ETAX_ETL_REPORT database for a specific date if no transactions exist for that date.
@@ -92,7 +92,7 @@ Check If Transaction Exists For Date
     ${flag}    Run Keyword If    ${count} != 0   Set Variable     True
     ...  ELSE  Set Variable     False
     log  ${flag}
-    [Return]    ${flag}
+    RETURN    ${flag}
 
 Insert Default Transactions For Date
     [Documentation]    Inserts default transaction data into the ETAX_ETL_REPORT database for the date specified in the '${date}' variable.

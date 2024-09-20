@@ -97,7 +97,7 @@ Set Document Description
     ${description}    Set Variable If    '${doc_status}' == 'A'    Generated transactions (Not include canceled)
     ...    '${doc_status}' == 'C'    Canceled transactions (Within transaction date)
     ...    Canceled transactions (Not within transaction date / Others)
-    [Return]    ${description}
+    RETURN    ${description}
 
 Set ETAX ETL Report File Infix
     [Documentation]    Sets the file infix based on the document status.
@@ -105,7 +105,7 @@ Set ETAX ETL Report File Infix
     ${file_infix}    Set Variable If    '${doc_status}' == 'A'    GeneratedTransactions
     ...    '${doc_status}' == 'C'    CanceledTransactions\(withinday\)
     ...    CanceledTransactions\(others\)
-    [Return]    ${file_infix}
+    RETURN    ${file_infix}
 
 Split Date String
     [Documentation]  Splits a date string in YYYY-MM-DD format into year, month, and day variables.
@@ -113,7 +113,7 @@ Split Date String
     ${year}    Set Variable    ${date_string.split('-')[0]}
     ${month}   Set Variable    ${date_string.split('-')[1]}
     ${day}    Set Variable    ${date_string.split('-')[2]}
-    [Return]    ${year}  ${month}  ${day}
+    RETURN    ${year}  ${month}  ${day}
 
 Set Date From to yesterday - 2
     Set Date With Subtraction From Current Date  2
