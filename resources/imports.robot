@@ -1,4 +1,4 @@
-*** Setting ***
+*** Settings ***
 Library            String
 Library            Collections
 Library           OracleDBConnector
