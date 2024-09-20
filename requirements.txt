@@ -3,3 +3,4 @@ cx-Oracle
 robotframework
 robotframework-oracledbconnector>=3.0.28
 robotframework-sshlibrary==3.4.0
+requests>=2.18.3
