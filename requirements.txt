@@ -1,3 +1,5 @@
-PyYAML>=5.4.1
-cx-Oracle==7.2.3
-robotframework==3.2.2
+PyYAML
+cx-Oracle
+robotframework
+robotframework-oracledbconnector>=3.0.28
+robotframework-sshlibrary==3.4.0
