@@ -7,7 +7,7 @@ etax_database:
 
 sftp:
   host: sftp.ascendmoney-dev.internal
-  username: etax-test.sftp-internal
-  password: !@#$1412QSDfedasdFSDw3#@
+  username: etax.sftp-internal
+  password: qy0G5ZbiaIbt1cIE
   utiba_etax_report_relative_path: etax.sftp-internal/dev/UtibaETaxReport/
 
