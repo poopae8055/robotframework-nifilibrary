@@ -1,4 +1,3 @@
-PyYAML
 cx-Oracle
 robotframework
 robotframework-oracledbconnector>=3.0.28
