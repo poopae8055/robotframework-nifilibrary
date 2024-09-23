@@ -59,10 +59,10 @@ class NifiLibrary(object):
 
         Arguments
         - access_token (str): The authentication token to be set.
-        - return_response (bool, optional): Boolean flag to indicate if the response should be returned. Default is False.
+        - return_response (bool, optional): Boolean flag to indicate if the kaywords should be returned. Default is False.
 
         Returns
-        - If return_response is True, returns the response from setting the service auth token.
+        - If return_response is True, returns the kaywords from setting the service auth token.
 
         Examples
         | Set Access Token |  ${token} |
@@ -87,12 +87,12 @@ class NifiLibrary(object):
 
         Arguments
             - base_url (str): NiFi domain
-            - token (str): NiFi token it can be get by using <Get Nifi Token> keywords
+            - token (str): NiFi token it can be get by using <Get Nifi Token> kaywords
             - processor_group_id (str): id of processor group
-            - return_response (bool, optional): Boolean flag to indicate if the response should be returned. Default is False.
+            - return_response (bool, optional): Boolean flag to indicate if the kaywords should be returned. Default is False.
 
         Returns
-            The response from the update process group state call if return_response is True.
+            The kaywords from the update process group state call if return_response is True.
 
         Examples
         | Start Process Group | ${processor_group_id} |
@@ -117,10 +117,10 @@ class NifiLibrary(object):
 
         Arguments
             - processor_group_id (str): id of processor group
-            - return_response (bool, optional): Boolean flag to indicate if the response should be returned. Default is False.
+            - return_response (bool, optional): Boolean flag to indicate if the kaywords should be returned. Default is False.
 
         Returns
-            The response from the update process group state call if return_response is True.
+            The kaywords from the update process group state call if return_response is True.
 
         Examples
         | Stop Process Group |  {processor_id} |
@@ -145,7 +145,7 @@ class NifiLibrary(object):
             - processor_group_id (str): id of processor group
 
          Returns
-             The response containing the process group details
+             The kaywords containing the process group details
 
         Examples
         | Get Process Group | ${processor_group_id} |
@@ -170,7 +170,7 @@ class NifiLibrary(object):
         This method retrieves the details of the root process group in NiFi.
 
         Returns
-            The response containing the root process group details.
+            The kaywords containing the root process group details.
 
         Examples
         | ${res}= | Get Root Process Group |
@@ -198,7 +198,7 @@ class NifiLibrary(object):
             - param_context_id (str): The ID of the parameter context.
 
         Returns
-            The response from the update process group call.
+            The kaywords from the update process group call.
 
         Examples
             | Update Process Group Parameter Context | ${processor_group_id} | ${param_context_name} |
@@ -233,7 +233,7 @@ class NifiLibrary(object):
             - param_context_id (str): The ID of the parameter context.
 
         Returns
-            The response containing the parameter context details.
+            The kaywords containing the parameter context details.
 
 
         Examples
@@ -268,7 +268,7 @@ class NifiLibrary(object):
             - parameter_value (str): The new value of the parameter.
 
         Returns
-            The response from the update parameter context call.
+            The kaywords from the update parameter context call.
 
         Examples
             | Update Parameter Value Without Stopped Component | ${param_context_id} | ${parameter_name} | ${parameter_value} |
@@ -309,7 +309,7 @@ class NifiLibrary(object):
             - param_context_id (str): The ID of the parameter context.
             - parameter_name (str): The name of the parameter to update.
             - parameter_value (str): The new value of the parameter.
-            - return_response (bool, optional): Boolean flag to indicate if the response should be returned. Default is False.
+            - return_response (bool, optional): Boolean flag to indicate if the kaywords should be returned. Default is False.
 
 
         Returns
