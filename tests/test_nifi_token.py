@@ -38,9 +38,9 @@ class NifiTokenTest(unittest.TestCase):
 
     @patch('nipyapi.security.set_service_auth_token')
     def test_set_endpoint_called_correctly(self, mock_set_service_auth_token):
-        mock_set_service_auth_token.return_value = 'response'
+        mock_set_service_auth_token.return_value = 'kaywords'
         result = self.nifi.set_service_auth_token('valid_token', return_response=True)
-        self.assertEqual(result, 'response')
+        self.assertEqual(result, 'kaywords')
         mock_set_service_auth_token.assert_called_once_with(token='valid_token', token_name='tokenAuth', service='nifi')
 
     @patch('nipyapi.security.set_service_auth_token')

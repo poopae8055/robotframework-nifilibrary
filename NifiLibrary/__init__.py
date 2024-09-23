@@ -1,4 +1,4 @@
-from .NifiLibrary import NifiLibrary
+from .NifiLibraryKeywords import NifiLibraryKeywords
 from .version import VERSION
 
 __version__ = VERSION
@@ -6,7 +6,7 @@ __version__ = VERSION
 __author__ = 'Weeraporn.pai'
 __email__ = 'poopae1322@gmail.com'
 
-class NifiLibrary(NifiLibrary):
+class NifiLibrary(NifiLibraryKeywords):
     """NifiLibrary is a robotframework library to call Apache Nifi api via nipyapi SDK.
 
     == Example Test Cases ==
