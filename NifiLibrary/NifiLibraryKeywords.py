@@ -6,7 +6,7 @@ from .version import VERSION
 
 __version__ = VERSION
 
-class NifiLibrary(object):
+class NifiLibraryKeywords(object):
     headers = {'Content-Type': 'application/x-www-form-urlencoded'}
     # disable TLS check, do at your own risk
     nipyapi.config.nifi_config.verify_ssl = False
