@@ -89,8 +89,9 @@ TC_ETAXRP_00008 - Export Summary Report as CSV File - Success
     [Documentation]  To ensure the API successfully downloads a CSV file for the specified parameters.
     [Tags]  ExportSearchSummaryReportAsCSVAPI  regression  success
     [Setup]    Delete Downloaded Files Folder If Exists
-    Given Set Date From  2024  02  29
-    And Set Date To  2024  02  31
+    Given Set Date From  2024  04  29
+    And Set Date To  2024  05  01
+    And Insert Transactions For Date Range If Not Exist  ${date_from}    ${date_to}    CO
     When Send request to export summary report as csv file with  CO
     Then The http status should be '200'
     And Response header should be shown correctly  text/csv
@@ -100,8 +101,8 @@ TC_ETAXRP_00008 - Export Summary Report as CSV File - Success
 TC_ETAXRP_00009 - Export Summary Report as CSV File with Data Not Found - Fail
     [Documentation]    To ensure the API handles data not found gracefully.
     [Tags]  ExportSearchSummaryReportAsCSVAPI  regression  fail
-    Given Set Date From  2023  02  29
-    And Set Date To  2023  02  31
+    Given Set Date From  2023  01  29
+    And Set Date To  2023  01  31
     When Send request to export summary report api  CO
     Then The http status should be '404'
     And Verify Data Not Found Response Message  CO
