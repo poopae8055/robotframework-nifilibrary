@@ -1,31 +1,30 @@
 *** Settings ***
-Library    NifiLibrary
-Library    OperatingSystem
-#Library    ../NifiLibrary/
+Library    NifiLibrary   WITH NAME    NF
+Library   SeleniumLibrary
+Library   OperatingSystem    WITH NAME    OS
+Library   RequestsLibrary
+Library   Collections
 
 *** Variables ***
-${base_url}   https://localhost:8443
-${username}   admin
-${password}   admin1234567
-${file_filter_param}  filefiltername
-${file_filter_name}  test.csv
-${file_name_param}  filename
-${file_name_value}  test_rename.csv
-${rename_processor_group_id}  9db695ff-018b-1000-64fd-94990205f41a
-${get_file_processor_id}  9db7073b-018b-1000-fcf2-aebaaddf59de
-${rename_file_processor_id}  9db8e198-018b-1000-ef7d-e9086cd5908e
-${put_file_processor_id}  9db92b00-018b-1000-07f2-69b36681a283
-${parameter_context_id}  9dcace32-018b-1000-bb1e-812cafdbaeb8
-${rename_file_starter_id}  d5dec3b3-0190-1000-7c4d-5d58f55fdac0
-${local_folder_path}  /Users/weerapornpaisingkhon/Documents/nifi/nifi_output
+${host}  localhost
+${port}  8443
+${username}  admin
+${password}  admin1234567
+${expected_file_path}   ${CURDIR}${/}../../../Documents/test_rename
+${expected_file}  new_name.txt
+${get_file_processor_id}  d5dec3b3-0190-1000-7c4d-5d58f55fdac0
+${automate_parameter_context_id}  182b103a-0192-1000-6b6a-5f6dc7a3bc90
 
 *** Test Cases ***
 TC0001 Rename file - Success
-    Connect to Nifi  ${base_url}  ${username}  ${password}
-    Stop Process Group  ${rename_processor_group_id}
-    Update Parameter Value With Stopped Component  ${parameter_context_id}  ${file_filter_param}  ${file_filter_name}
-    Update Parameter Value With Stopped Component  ${parameter_context_id}  ${file_name_param}  ${file_name_value}
-    Run Once Processor  ${rename_file_starter_id}
-    ${dic}  List Directory  ${local_folder_path}/
-    Wait Until Keyword Succeeds  3x  5s  File Should Exist  ${local_folder_path}/${file_name_value}
-
+    NF.Create Nifi Session    ${host}  ${port}  ${username}  ${password}
+    #update parameter value
+    NF.Update Parameter Value With Stopped Component  ${automate_parameter_context_id}  change_name  ${expected_file}
+    #update parameter context of root to use automate
+    NF.Update Process Group Parameter Context  d5482ad2-0190-1000-199b-8696a8e7e5b4  ${automate_parameter_context_id}
+    #Triger flow
+    NF.Stop Processor  ${get_file_processor_id}
+    NF.Start Processor  ${get_file_processor_id}
+    NF.Stop Processor  ${get_file_processor_id}
+    #Verify the result
+    OS.File Should Exist    ${expected_file_path}${expected_file}

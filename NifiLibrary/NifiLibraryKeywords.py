@@ -11,32 +11,37 @@ class NifiLibraryKeywords(object):
     # disable TLS check, do at your own risk
     nipyapi.config.nifi_config.verify_ssl = False
     nipyapi.config.registry_config.verify_ssl = False
+    nipyapi.config.host = ""
 
     def __init__(self):
         self._endpoint = None
         self._accessToken = None
 
-    @keyword('Connect To Nifi')
-    def connect_to_nifi(self, base_url=None, username=None, password=None, return_response=False):
+    @keyword('Create Nifi Session')
+    def create_nifi_session(self, base_url=None, port=None,username=None, password=None, return_response=False):
         """
         Connect to NiFi and obtain an access token.
 
-        Arguments
-            - base_url (str): NiFi domain (e.g., 'https://localhost:8443')
-            - username (str): NiFi username
-            - password (str): NiFi password
+        Arguments:
+            - base_url (str): NiFi base URL (e.g., 'localhost').
+            - port (str): NiFi port (e.g., '8443').
+            - username (str): NiFi username.
+            - password (str): NiFi password.
             - return_response (bool, optional): True to return token, False to return None. Defaults to False.
-            Returns:
-            - access_token: The obtained access token
 
-        Examples
-        | Connect To Nifi |  https://localhost:8443 | ${username} | ${password} |
+        Returns:
+            - str: The obtained access token if `return_response` is True, otherwise None.
 
+        Examples:
+        | Create Nifi Session |  localhost | 8443 | ${username} | ${password} |
+        | ${token}= | Create Nifi Session | localhost | 8443 | ${username} | ${password} | True |
         """
-        if not base_url or not username or not password:
+        if not base_url or not port or not username or not password:
             raise Exception('Require parameters cannot not be none')
-        # connect to Nifi
-        self._endpoint = nipyapi.utils.set_endpoint(f"{base_url}/nifi-api/")
+        print(f"https://{base_url}:{port}/nifi-api")
+
+        nipyapi.utils.set_endpoint(f"https://{base_url}:{port}/nifi-api", False, True)
+
         try:
             # Create an access token
             self._accessToken = nipyapi.nifi.apis.access_api.AccessApi(
@@ -52,26 +57,35 @@ class NifiLibraryKeywords(object):
             logger.error(str(ex))
             raise Exception(str(ex))
 
-    @keyword('Set Access Token')
-    def set_service_auth_token(self, access_token=None, return_response=False):
+    @keyword('Set Nifi Access Token')
+    def set_nifi_access_token(self, base_url=None, port=None, access_token=None, return_response=False):
         """
-        Connect to NiFi and set the service authentication token.
+        Set the service authentication token for NiFi.
 
-        Arguments
-        - access_token (str): The authentication token to be set.
-        - return_response (bool, optional): Boolean flag to indicate if the kaywords should be returned. Default is False.
+        Arguments:
+            - base_url (str): NiFi base URL (e.g., 'localhost').
+            - port (str): NiFi port (e.g., '8443').
+            - access_token (str): The authentication token to be set.
+            - return_response (bool, optional): True to return the response from setting the service auth token,
+              False to return None. Defaults to False.
 
-        Returns
-        - If return_response is True, returns the kaywords from setting the service auth token.
+        Returns:
+            - object: The response from `nipyapi.security.set_service_auth_token` if `return_response` is True,
+              otherwise None.
 
-        Examples
-        | Set Access Token |  ${token} |
+        Examples:
+        | Set Nifi Access Token |  localhost | 8443 | ${token} |
+        | ${response}= | Set Nifi Access Token | localhost | 8443 | ${token} | True |
         """
-        if not access_token:
+        if not base_url or not port or not access_token:
             raise Exception('Require parameters cannot not be none')
+
+        nipyapi.utils.set_endpoint(f"https://{base_url}:{port}/nifi-api", False, False)
+
         try:
             # Set the service auth token
-            response = nipyapi.security.set_service_auth_token(token=access_token, token_name='tokenAuth', service='nifi')
+            response = nipyapi.security.set_service_auth_token(token=access_token, token_name='tokenAuth',
+                                                               service='nifi')
             if return_response:
                 return response
         except Exception as ex:
@@ -430,27 +444,27 @@ class NifiLibraryKeywords(object):
             logger.error(str(ex))
             raise Exception(str(ex))
 
-    @keyword('Run Once Processor')
-    def run_once_processor(self, processor_id=None, return_response=False):
-        """
-         To run once processor
-
-         Arguments
-            - processor_id: id of processor
-
-        Examples
-        | Run Once Processor |  {processor_id} |
-
-        """
-        if not processor_id:
-            raise Exception('Require parameters cannot be none')
-        try:
-            response = self.update_process_state(processor_id, "RUN_ONCE")
-            if return_response:
-                return response
-        except Exception as ex:
-            logger.error(str(ex))
-            raise Exception(str(ex))
+    # @keyword('Run Once Processor')
+    # def run_once_processor(self, processor_id=None, return_response=False):
+    #     """
+    #      To run once processor
+    #
+    #      Arguments
+    #         - processor_id: id of processor
+    #
+    #     Examples
+    #     | Run Once Processor |  {processor_id} |
+    #
+    #     """
+    #     if not processor_id:
+    #         raise Exception('Require parameters cannot be none')
+    #     try:
+    #         response = self.update_process_state(processor_id, "RUN_ONCE")
+    #         if return_response:
+    #             return response
+    #     except Exception as ex:
+    #         logger.error(str(ex))
+    #         raise Exception(str(ex))
 
     @keyword('Disable Processor')
     def disable_processor(self, processor_id=None, return_response=False):
@@ -553,7 +567,6 @@ class NifiLibraryKeywords(object):
         processor_res = nipyapi.nifi.apis.processors_api.ProcessorsApi(
             api_client=nipyapi.config.nifi_config.api_client).get_processor(
             id=processor_id)
-        print(processor_res)
         processor_version = processor_res.revision.version
         processor_id = processor_res.id
         print(processor_id)
@@ -566,6 +579,7 @@ class NifiLibraryKeywords(object):
                 id=processor_id,
                 body=data
             )
+            print(response)
             return response
         except Exception as ex:
             logger.error(str(ex))
