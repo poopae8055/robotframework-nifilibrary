@@ -2,6 +2,7 @@
 Library    NifiLibrary   WITH NAME    NF
 Library   SeleniumLibrary
 Library   OperatingSystem    WITH NAME    OS
+Library   ../NifiLibrary/     WITH NAME    NF
 Library   RequestsLibrary
 Library   Collections
 
@@ -23,8 +24,6 @@ TC0001 Rename file - Success
     #update parameter context of root to use automate
     NF.Update Process Group Parameter Context  d5482ad2-0190-1000-199b-8696a8e7e5b4  ${automate_parameter_context_id}
     #Triger flow
-    NF.Stop Processor  ${get_file_processor_id}
-    NF.Start Processor  ${get_file_processor_id}
-    NF.Stop Processor  ${get_file_processor_id}
+    NF.Run Once Processor      ${get_file_processor_id}
     #Verify the result
-    OS.File Should Exist    ${expected_file_path}${expected_file}
+    OS.File Should Exist    ${expected_file_path}/${expected_file}
