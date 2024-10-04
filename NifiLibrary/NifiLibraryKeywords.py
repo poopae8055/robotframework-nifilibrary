@@ -2,6 +2,7 @@ from robot.api import logger
 from robot.api.deco import keyword
 import nipyapi
 from time import sleep
+import requests
 from .version import VERSION
 
 __version__ = VERSION
@@ -81,6 +82,7 @@ class NifiLibraryKeywords(object):
             raise Exception('Require parameters cannot not be none')
 
         nipyapi.utils.set_endpoint(f"https://{base_url}:{port}/nifi-api", False, False)
+        self._accessToken = access_token
 
         try:
             # Set the service auth token
@@ -444,27 +446,27 @@ class NifiLibraryKeywords(object):
             logger.error(str(ex))
             raise Exception(str(ex))
 
-    # @keyword('Run Once Processor')
-    # def run_once_processor(self, processor_id=None, return_response=False):
-    #     """
-    #      To run once processor
-    #
-    #      Arguments
-    #         - processor_id: id of processor
-    #
-    #     Examples
-    #     | Run Once Processor |  {processor_id} |
-    #
-    #     """
-    #     if not processor_id:
-    #         raise Exception('Require parameters cannot be none')
-    #     try:
-    #         response = self.update_process_state(processor_id, "RUN_ONCE")
-    #         if return_response:
-    #             return response
-    #     except Exception as ex:
-    #         logger.error(str(ex))
-    #         raise Exception(str(ex))
+    @keyword('Run Once Processor')
+    def run_once_processor(self, processor_id=None, return_response=False):
+        """
+         To run once processor
+
+         Arguments
+            - processor_id: id of processor
+
+        Examples
+        | Run Once Processor |  {processor_id} |
+
+        """
+        if not processor_id:
+            raise Exception('Require parameters cannot be none')
+        try:
+            response = self.update_run_once_process_state(processor_id, "RUN_ONCE")
+            if return_response:
+                return response
+        except Exception as ex:
+            logger.error(str(ex))
+            raise Exception(str(ex))
 
     @keyword('Disable Processor')
     def disable_processor(self, processor_id=None, return_response=False):
@@ -569,18 +571,75 @@ class NifiLibraryKeywords(object):
             id=processor_id)
         processor_version = processor_res.revision.version
         processor_id = processor_res.id
-        print(processor_id)
-        data = {"revision": {"clientId": processor_id,
-                             "version": processor_version},
-                "state": state}
+        print(type(state))
+
         try:
-            response = nipyapi.nifi.apis.processors_api.ProcessorsApi(
+            response =   nipyapi.nifi.apis.processors_api.ProcessorsApi(
                 api_client=nipyapi.config.nifi_config.api_client).update_run_status(
                 id=processor_id,
-                body=data
+                body=nipyapi.nifi.models.ProcessorRunStatusEntity(
+                    revision=nipyapi.nifi.models.RevisionDTO(
+                        version=processor_version
+                    ),
+                state=state
             )
+        )
             print(response)
             return response
         except Exception as ex:
             logger.error(str(ex))
             raise Exception(str(ex))
+
+    def update_run_once_process_state(self, processor_id=None, state=None):
+        """
+        Trigger a processor to run once using the requests library.
+
+        This method uses the requests library to send a PUT request to the NiFi API
+        to trigger a processor to run once. It retrieves the necessary processor details,
+        constructs the API endpoint URL, sets the required headers, and sends the request
+        with the appropriate payload.
+
+        Args:
+            processor_id (str): The ID of the processor to trigger.
+            state (str): The desired state of the processor, which should be "RUN_ONCE".
+
+        Returns:
+            dict: The JSON response from the API if successful.
+            None: If the request was not successful.
+        """
+        if not processor_id or not state:
+            raise ValueError("processor_id and state are required arguments")
+
+        processor_res = nipyapi.nifi.apis.processors_api.ProcessorsApi(
+            api_client=nipyapi.config.nifi_config.api_client).get_processor(
+            id=processor_id)
+        processor_version = processor_res.revision.version
+        processor_id = processor_res.id
+
+        base_url = nipyapi.config.nifi_config.host
+        url = f"{base_url}/processors/{processor_id}/run-status"
+        headers = {
+            'Authorization': f'Bearer {self._accessToken}',
+            'Content-Type': 'application/json'
+        }
+
+        data = {
+            "revision": {
+                "version": processor_version  # You might need to fetch the correct revision version
+            },
+            "state": state
+        }
+
+        try:
+            response = requests.put(url, headers=headers, json=data,
+                                    verify=False)  # Consider handling SSL verification properly
+
+            if response.status_code == 200:
+                return response.json()
+            else:
+                print(f"Error updating processor status: {response.status_code} - {response.text}")
+                return None
+
+        except requests.exceptions.RequestException as e:
+            print(f"An error occurred: {e}")
+            return None
